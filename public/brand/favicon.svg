@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>AutoSkeleton</title>
+  <rect width="32" height="32" rx="6" fill="#18181B"/>
+  <!-- Avatar -->
+  <circle cx="9" cy="9" r="4" fill="#6366F1"/>
+  <!-- Name / subtitle -->
+  <rect x="15" y="7"  width="12" height="3" rx="1.5" fill="#E5E7EB"/>
+  <rect x="15" y="11" width="8"  height="3" rx="1.5" fill="#52525B"/>
+  <!-- Content lines -->
+  <rect x="5"  y="18" width="22" height="3" rx="1.5" fill="#E5E7EB"/>
+  <rect x="5"  y="23" width="16" height="3" rx="1.5" fill="#52525B"/>
+</svg>

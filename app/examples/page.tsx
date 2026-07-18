@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Header from '@/components/Header';
+import { Copy, Check } from 'lucide-react';
 import {
   Skeleton,
   SkeletonGroup,
@@ -15,40 +16,896 @@ import {
 const CARD = 'bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden';
 const ROW_DIV = 'divide-y divide-slate-100 dark:divide-slate-800';
 
+/* ─── Syntax highlighter ────────────────────────────────────────────────────── */
+
+function highlightTsx(raw: string): string {
+  const saved: string[] = [];
+  const save = (html: string) => { saved.push(html); return `\x00${saved.length - 1}\x00`; };
+  let s = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Save strings, comments, and every highlighted token into slots so that
+  // later regex passes never accidentally match inside an already-emitted <span>.
+  s = s.replace(/(\{?\/\*[\s\S]*?\*\/\}?)/g,
+    m => save(`<span style="color:#6b7280;font-style:italic">${m}</span>`));
+  s = s.replace(/(^\/\/[^\n]*)/gm,
+    m => save(`<span style="color:#6b7280;font-style:italic">${m}</span>`));
+  s = s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,
+    m => save(`<span style="color:#4ade80">${m}</span>`));
+  s = s.replace(/(?<!\x00)\b(\d+(?:\.\d+)?)(?!\x00)\b/g,
+    (_, n) => save(`<span style="color:#fb923c">${n}</span>`));
+  s = s.replace(/\b(true|false|null|undefined)\b/g,
+    (_, kw) => save(`<span style="color:#fb923c">${kw}</span>`));
+  s = s.replace(/\b(import|export|default|from|const|let|var|function|return|if|else|typeof|type|interface|extends|as|async|await)\b/g,
+    (_, kw) => save(`<span style="color:#c084fc">${kw}</span>`));
+  s = s.replace(/(?<=&lt;\/?)\b([A-Z][A-Za-z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#67e8f9">${n}</span>`));
+  // HTML native element tag names (div, p, h1–h6, span, img, button, ul, li, a…)
+  s = s.replace(/(?<=&lt;\/?)\b([a-z][a-z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#f97583">${n}</span>`));
+  // JSX/HTML attribute names (word before =value)
+  s = s.replace(/\b([a-zA-Z][a-zA-Z0-9]*)(?=\s*=\s*(?:\{|"|\d))/g,
+    (_, n) => save(`<span style="color:#93c5fd">${n}</span>`));
+  // Object property access (.propName) — colours user.name, user.role, etc.
+  s = s.replace(/(?<=\.)([a-zA-Z][a-zA-Z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#a5b4fc">${n}</span>`));
+  // Restore all saved tokens
+  s = s.replace(/\x00(\d+)\x00/g, (_, i) => saved[+i]);
+  return s;
+}
+
+/* ─── Code snippets ─────────────────────────────────────────────────────────── */
+
+const CODE_USER_PROFILE = `import {
+  ProfileSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function UserProfile({ loading, user }) {
+  // ProfileSkeleton handles avatar + name + bio lines + button in one shot
+  if (loading) {
+    return (
+      <div className="card p-5">
+        <ProfileSkeleton avatarSize={56} bioLines={3} statsCount={0} showButton />
+      </div>
+    );
+  }
+
+  return (
+    <div className="card p-5">
+      <div className="flex items-start gap-4">
+        <img className="w-14 h-14 rounded-full" src={user.avatar} />
+        <div>
+          <h3>{user.name}</h3>
+          <p>{user.role} · {user.location}</p>
+        </div>
+      </div>
+      <p className="mt-4">{user.bio}</p>
+      <div className="flex gap-3 mt-4">
+        <button>Follow</button>
+        <button>Message</button>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_SOCIAL_POST = `import {
+  AvatarSkeleton, TextSkeleton, ImageSkeleton,
+  SkeletonGroup, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function SocialPost({ loading, post }) {
+  return (
+    <div className="card p-4 space-y-3">
+      {/* Author row */}
+      <div className="flex items-center gap-3">
+        {loading
+          ? <AvatarSkeleton size={40} />
+          : <img className="w-10 h-10 rounded-full" src={post.author.avatar} />}
+
+        <div style={{ flex: 1 }}>
+          {/* One TextSkeleton, 2 lines, random widths — replaces two separate skeletons */}
+          {loading
+            ? <TextSkeleton lines={2} lineHeight={14} gap={4}
+                randomizeWidths minLineWidth={22} maxLineWidth={52} />
+            : (
+                <>
+                  <p>{post.author.name}</p>
+                  <p>{post.createdAt}</p>
+                </>
+              )}
+        </div>
+
+        {loading ? <Skeleton size={18} radius="sm" /> : <button>···</button>}
+      </div>
+
+      {/* Body text */}
+      {loading
+        ? <TextSkeleton lines={3} lineHeight={20} gap={5} lastLineWidth="60%" />
+        : <p>{post.body}</p>}
+
+      {/* Post image */}
+      {loading
+        ? <ImageSkeleton aspectRatio="16/9" className="aspect-video !h-auto" />
+        : <img className="w-full rounded-lg" src={post.image} />}
+
+      {/* Reactions */}
+      {loading ? (
+        <SkeletonGroup direction="row" gap={20}>
+          <TextSkeleton lines={1} lineHeight={14} lastLineWidth={35} />
+          <TextSkeleton lines={1} lineHeight={14} lastLineWidth={45} />
+        </SkeletonGroup>
+      ) : (
+        <div className="flex gap-5">
+          <button>♥ {post.likes}</button>
+          <button>💬 {post.comments}</button>
+        </div>
+      )}
+    </div>
+  );
+}`;
+
+const CODE_NOTIFICATION_LIST = `import {
+  TextSkeleton, ListSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function NotificationList({ loading, notifications }) {
+  return (
+    <div className="card">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        {loading
+          ? <TextSkeleton lines={1} lineHeight={16} lastLineWidth={100} />
+          : <p>Notifications</p>}
+        {loading
+          ? <TextSkeleton lines={1} lineHeight={13} lastLineWidth={70} />
+          : <button>Mark all read</button>}
+      </div>
+
+      {/* ListSkeleton renders icon + 2-line text rows automatically */}
+      {loading
+        ? <ListSkeleton items={4} showIcon iconSize={32} lines={2} gap={12} />
+        : notifications.map(n => (
+            <div key={n.id} className="flex items-start gap-3 px-4 py-3">
+              <span>{n.icon}</span>
+              <div>
+                <p>{n.text}</p>
+                <p>{n.time}</p>
+              </div>
+            </div>
+          ))}
+    </div>
+  );
+}`;
+
+const CODE_COMMENT_THREAD = `import {
+  TextSkeleton, CommentSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function CommentThread({ loading, comments }) {
+  return (
+    <div className="card">
+      <div className="px-4 py-3 border-b">
+        {loading
+          ? <TextSkeleton lines={1} lineHeight={16} lastLineWidth={80} />
+          : <p>{comments.length} Comments</p>}
+      </div>
+
+      {/* CommentSkeleton renders avatar + name/timestamp + body + actions per item */}
+      {loading
+        ? <CommentSkeleton items={3} lines={2} avatarSize={34} showActions />
+        : comments.map(c => (
+            <div key={c.id} className="flex gap-3 px-4 py-4 border-b">
+              <img className="w-[34px] h-[34px] rounded-full" src={c.author.avatar} />
+              <div>
+                <div className="flex gap-2">
+                  <span>{c.author.name}</span>
+                  <span>{c.createdAt}</span>
+                </div>
+                <p>{c.body}</p>
+              </div>
+            </div>
+          ))}
+    </div>
+  );
+}`;
+
+const CODE_BLOG_ARTICLE = `import {
+  ArticleSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function BlogArticle({ loading, article }) {
+  // ArticleSkeleton composes hero image + author row + heading + body lines
+  if (loading) {
+    return (
+      <ArticleSkeleton
+        showHeroImage heroHeight={200}
+        showAuthor
+        bodyLines={5}
+        showHeading
+      />
+    );
+  }
+
+  return (
+    <div className="card">
+      <img className="w-full aspect-video object-cover" src={article.cover} />
+      <div className="p-4 space-y-3">
+        <span className="tag">{article.category}</span>
+        <h3>{article.title}</h3>
+        <div className="flex items-center gap-2">
+          <img className="w-7 h-7 rounded-full" src={article.author.avatar} />
+          <div>
+            <p>{article.author.name}</p>
+            <p>{article.publishedAt} · {article.readTime}</p>
+          </div>
+        </div>
+        <p>{article.excerpt}</p>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_VIDEO_CARD = `import {
+  ImageSkeleton, TextSkeleton, AvatarSkeleton,
+  SkeletonGroup, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function VideoCard({ loading, video }) {
+  return (
+    <div className="card">
+      {/* Thumbnail + duration badge */}
+      <div className="relative">
+        {loading
+          ? <ImageSkeleton aspectRatio="16/9" radius="none" className="aspect-video !h-auto" />
+          : <img className="w-full aspect-video object-cover" src={video.thumbnail} />}
+        <div className="absolute bottom-2 right-2">
+          {loading
+            ? <Skeleton width={40} height={20} radius="sm" />
+            : <span className="badge">{video.duration}</span>}
+        </div>
+      </div>
+
+      {/* Channel avatar + title + meta */}
+      <div className="p-3 flex gap-3">
+        {loading
+          ? <AvatarSkeleton size={32} />
+          : <img className="w-8 h-8 rounded-full" src={video.channel.avatar} />}
+
+        <div style={{ flex: 1 }}>
+          {loading ? (
+            <SkeletonGroup gap={5}>
+              {/* 2-line title */}
+              <TextSkeleton lines={2} lineHeight={18} gap={4} lastLineWidth="62%" />
+              {/* channel name + views — one block with random widths */}
+              <TextSkeleton lines={2} lineHeight={13} gap={3}
+                randomizeWidths minLineWidth={38} maxLineWidth={60} />
+            </SkeletonGroup>
+          ) : (
+            <>
+              <p>{video.title}</p>
+              <p>{video.channel.name}</p>
+              <p>{video.views} · {video.uploadedAt}</p>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_PRODUCT_CARD = `import {
+  ProductCardSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function ProductCard({ loading, product }) {
+  // ProductCardSkeleton handles image + name + rating row + price + CTA button
+  if (loading) {
+    return <ProductCardSkeleton imageHeight={220} showRating showButton />;
+  }
+
+  return (
+    <div className="card">
+      <div className="relative">
+        <img className="w-full" src={product.image} />
+        <div className="absolute top-2.5 left-2.5">
+          <span className="badge-orange">{product.badge}</span>
+        </div>
+      </div>
+      <div className="p-4 space-y-2">
+        <h3>{product.name}</h3>
+        <div>★ {product.rating} ({product.reviewCount})</div>
+        <div>
+          <span>{product.price}</span>
+          <span className="line-through">{product.originalPrice}</span>
+        </div>
+        <button className="btn-primary w-full">Add to Cart</button>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_PRICING_CARD = `import {
+  PricingCardSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function PricingCard({ loading, plan }) {
+  // PricingCardSkeleton handles plan name + badge + price + tagline + feature list + CTA
+  if (loading) {
+    return <PricingCardSkeleton features={5} showBadge showButton />;
+  }
+
+  return (
+    <div className="card p-6 space-y-5">
+      <div className="flex items-center justify-between">
+        <span>{plan.name}</span>
+        <span className="badge">{plan.badge}</span>
+      </div>
+      <div className="flex items-baseline gap-1">
+        <span className="text-4xl font-bold">{plan.price}</span>
+        <span>/month</span>
+      </div>
+      <p>{plan.tagline}</p>
+      <div className="space-y-2.5">
+        {plan.features.map(f => (
+          <div key={f} className="flex items-center gap-2">
+            <span>✓</span>
+            <span>{f}</span>
+          </div>
+        ))}
+      </div>
+      <button className="btn-primary w-full">{plan.cta}</button>
+    </div>
+  );
+}`;
+
+const CODE_PRODUCT_DETAIL = `import {
+  ImageSkeleton, TextSkeleton, ButtonSkeleton,
+  SkeletonGroup, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function ProductDetail({ loading, product }) {
+  return (
+    <div className="card p-6">
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Product image */}
+        {loading
+          ? <ImageSkeleton aspectRatio="1" radius="lg" className="aspect-square !h-auto" />
+          : <img className="w-full aspect-square rounded-xl object-cover" src={product.image} />}
+
+        <div className="space-y-4">
+          {/* Breadcrumb + name + rating grouped in one SkeletonGroup */}
+          {loading ? (
+            <SkeletonGroup gap={8}>
+              <TextSkeleton lines={1} lineHeight={14} lastLineWidth="48%" />
+              <TextSkeleton lines={2} lineHeight={28} gap={5} lastLineWidth="82%" />
+              <TextSkeleton lines={1} lineHeight={16} lastLineWidth="48%" />
+            </SkeletonGroup>
+          ) : (
+            <>
+              <p>{product.breadcrumb}</p>
+              <h2>{product.name}</h2>
+              <div>★ {product.rating} ({product.reviewCount} reviews)</div>
+            </>
+          )}
+
+          {/* Price — different line heights suit explicit skeletons */}
+          {loading ? (
+            <SkeletonGroup direction="row" gap={10} align="baseline">
+              <TextSkeleton lines={1} lineHeight={36} lastLineWidth={90} />
+              <TextSkeleton lines={1} lineHeight={18} lastLineWidth={65} />
+            </SkeletonGroup>
+          ) : (
+            <div>
+              <span>{product.price}</span>
+              <span className="line-through">{product.originalPrice}</span>
+            </div>
+          )}
+
+          {/* Size selector */}
+          <div>
+            {loading
+              ? <TextSkeleton lines={1} lineHeight={14} lastLineWidth="22%" />
+              : <p>Select size</p>}
+            <div className="flex gap-2 mt-2">
+              {loading
+                ? ['XS','S','M','L','XL'].map(s => <Skeleton key={s} width={36} height={36} radius="md" />)
+                : product.sizes.map(s => <button key={s}>{s}</button>)}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            {loading ? (
+              <>
+                <div style={{ flex: 1 }}><ButtonSkeleton width="100%" height={44} /></div>
+                <ButtonSkeleton width={44} height={44} />
+              </>
+            ) : (
+              <>
+                <button className="flex-1">Add to Cart</button>
+                <button>♥</button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_ANALYTICS_DASHBOARD = `import {
+  StatisticCardSkeleton, TextSkeleton, ListSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function AnalyticsDashboard({ loading, data }) {
+  return (
+    <div className="space-y-4">
+      {/* Stat cards — StatisticCardSkeleton per card */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {loading
+          ? Array.from({ length: 4 }, (_, i) => (
+              <div key={i} className="card p-4">
+                <StatisticCardSkeleton showIcon metricWidth="55%" />
+              </div>
+            ))
+          : data.stats.map(s => (
+              <div key={s.label} className="card p-4">
+                <p>{s.label}</p>
+                <p>{s.value}</p>
+                <p>{s.change}</p>
+              </div>
+            ))}
+      </div>
+
+      {/* Activity feed — ListSkeleton for the rows */}
+      <div className="card">
+        <div className="px-4 py-3 border-b">
+          {loading
+            ? <TextSkeleton lines={1} lineHeight={18} lastLineWidth={130} />
+            : <p>Recent Activity</p>}
+        </div>
+        {loading
+          ? <ListSkeleton items={4} showIcon iconSize={36} lines={2} gap={12} />
+          : data.activity.map(a => (
+              <div key={a.id} className="flex items-center gap-3 px-4 py-3">
+                <img className="w-9 h-9 rounded-full" src={a.user.avatar} />
+                <div>
+                  <p><b>{a.user.name}</b> {a.action}</p>
+                  <p>{a.time}</p>
+                </div>
+              </div>
+            ))}
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_DATA_TABLE = `import {
+  TableSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+const COLUMNS = ['Name', 'Email', 'Role', 'Status', 'Joined'];
+
+function DataTable({ loading, rows }) {
+  // TableSkeleton handles header row + N data rows × N columns automatically
+  if (loading) {
+    return <TableSkeleton rows={5} columns={5} showHeader />;
+  }
+
+  return (
+    <div className="card overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr>
+            {COLUMNS.map(col => (
+              <th key={col} className="px-4 py-3 text-left">{col}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(row => (
+            <tr key={row.email}>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2.5">
+                  <img className="w-7 h-7 rounded-full" src={row.avatar} />
+                  <span>{row.name}</span>
+                </div>
+              </td>
+              <td className="px-4 py-3">{row.email}</td>
+              <td className="px-4 py-3">{row.role}</td>
+              <td className="px-4 py-3">{row.status}</td>
+              <td className="px-4 py-3">{row.joined}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}`;
+
+const CODE_LOGIN_FORM = `import {
+  FormSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function LoginForm({ loading }) {
+  // FormSkeleton renders label + input field rows + submit button
+  if (loading) {
+    return (
+      <div className="card p-6">
+        <FormSkeleton fields={2} showLabels inputHeight={40} showSubmitButton />
+      </div>
+    );
+  }
+
+  return (
+    <div className="card p-6 space-y-5">
+      <div className="text-center">
+        <h3>Welcome back</h3>
+        <p>Sign in to your account</p>
+      </div>
+      {['Email', 'Password'].map(field => (
+        <div key={field} className="space-y-1.5">
+          <label>{field}</label>
+          <input type={field === 'Password' ? 'password' : 'email'} placeholder={field} />
+        </div>
+      ))}
+      <div className="flex justify-between">
+        <label>Remember me</label>
+        <button>Forgot password?</button>
+      </div>
+      <button className="btn-primary w-full">Sign in</button>
+    </div>
+  );
+}`;
+
+const CODE_CHAT = `import {
+  ChatMessageSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function Chat({ loading, conversation }) {
+  // ChatMessageSkeleton renders alternating chat bubbles + optional input bar
+  if (loading) {
+    return <ChatMessageSkeleton messages={4} showInput />;
+  }
+
+  return (
+    <div className="card">
+      <div className="flex items-center gap-3 px-4 py-3 border-b">
+        <img className="w-8 h-8 rounded-full" src={conversation.participant.avatar} />
+        <div>
+          <p>{conversation.participant.name}</p>
+          <p>{conversation.participant.status}</p>
+        </div>
+      </div>
+      <div className="p-4 space-y-3">
+        {conversation.messages.map(msg => (
+          <div key={msg.id} className={msg.isMe ? 'text-right' : 'text-left'}>
+            <span className="bubble">{msg.text}</span>
+          </div>
+        ))}
+      </div>
+      <div className="px-4 pb-4 flex gap-2">
+        <input className="flex-1" placeholder="Type a message…" />
+        <button>↗</button>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_SETTINGS_PANEL = `import {
+  TextSkeleton, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function SettingsPanel({ loading, settings }) {
+  return (
+    <div className="card">
+      <div className="px-5 py-3 border-b">
+        {loading
+          ? <TextSkeleton lines={1} lineHeight={18} lastLineWidth={120} />
+          : <p>Account Settings</p>}
+      </div>
+
+      {loading
+        ? Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="flex items-center justify-between px-5 py-4 gap-4">
+              {/* randomizeWidths gives each row a natural label + description pair */}
+              <TextSkeleton
+                lines={2} lineHeight={14} gap={6} style={{ flex: 1 }}
+                randomizeWidths minLineWidth={52} maxLineWidth={78}
+              />
+              <Skeleton width={44} height={24} radius="full" />
+            </div>
+          ))
+        : settings.map(s => (
+            <div key={s.key} className="flex items-center justify-between px-5 py-4 gap-4">
+              <div>
+                <p>{s.label}</p>
+                <p>{s.description}</p>
+              </div>
+              <button
+                role="switch"
+                aria-checked={s.enabled}
+                className={s.enabled ? 'toggle-on' : 'toggle-off'}
+              />
+            </div>
+          ))}
+    </div>
+  );
+}`;
+
+const CODE_SIDEBAR_NAV = `import {
+  SidebarSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function SidebarNav({ loading, nav }) {
+  // SidebarSkeleton composes logo block + nav items + optional section headings + user footer
+  if (loading) {
+    return (
+      <SidebarSkeleton
+        navItems={6}
+        showLogo
+        showProfile
+        showSectionHeadings
+        sectionInterval={3}
+      />
+    );
+  }
+
+  return (
+    <div className="card p-4 space-y-4">
+      <div className="flex items-center gap-2.5 pb-3 border-b">
+        <img className="w-8 h-8 rounded-lg" src={nav.logoUrl} />
+        <span>{nav.appName}</span>
+      </div>
+      <div className="space-y-0.5">
+        {nav.items.map(item => (
+          <a key={item.href} href={item.href} className={item.active ? 'nav-item-active' : 'nav-item'}>
+            <item.Icon size={18} />
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </div>
+      <div className="pt-3 border-t flex items-center gap-2.5">
+        <img className="w-8 h-8 rounded-full" src={nav.user.avatar} />
+        <div>
+          <p>{nav.user.name}</p>
+          <p>{nav.user.plan}</p>
+        </div>
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_MUSIC_PLAYER = `import {
+  ImageSkeleton, TextSkeleton, SkeletonGroup, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function MusicPlayer({ loading, track }) {
+  return (
+    <div className="card p-5 space-y-4">
+      {/* Album art + track info */}
+      <div className="flex items-center gap-4">
+        {loading
+          ? <ImageSkeleton
+              aspectRatio="1" width={72} radius="lg"
+              className="aspect-square !h-auto"
+              style={{ flexShrink: 0 }}
+            />
+          : <img className="w-[72px] h-[72px] rounded-xl" src={track.artwork} />}
+
+        <div style={{ flex: 1 }}>
+          {/* One TextSkeleton, 2 lines, random widths for title + artist */}
+          {loading
+            ? <TextSkeleton lines={2} lineHeight={16} gap={5}
+                randomizeWidths minLineWidth={45} maxLineWidth={75} />
+            : (
+                <>
+                  <p>{track.title}</p>
+                  <p>{track.artist} · {track.album}</p>
+                </>
+              )}
+        </div>
+
+        {loading ? <Skeleton size={20} radius="full" /> : <button>♥</button>}
+      </div>
+
+      {/* Progress bar */}
+      <div className="space-y-1">
+        {loading
+          ? <Skeleton width="100%" height={4} radius="full" />
+          : <div className="progress-bar"><div style={{ width: track.progress + '%' }} /></div>}
+        <div className="flex justify-between">
+          {loading ? (
+            <SkeletonGroup direction="row" justify="space-between" style={{ width: '100%' }}>
+              <Skeleton width={28} height={12} />
+              <Skeleton width={28} height={12} />
+            </SkeletonGroup>
+          ) : (
+            <>
+              <span>{track.currentTime}</span>
+              <span>{track.duration}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-6">
+        {loading ? (
+          <SkeletonGroup direction="row" gap={24} align="center" justify="center">
+            {[22, 22, 40, 22, 22].map((size, i) => (
+              <Skeleton key={i} size={size} variant="circle" />
+            ))}
+          </SkeletonGroup>
+        ) : (
+          <>
+            <button>⇄</button>
+            <button>⏮</button>
+            <button className="play-btn">▶</button>
+            <button>⏭</button>
+            <button>↻</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}`;
+
+const CODE_NAVBAR = `import {
+  NavbarSkeleton,
+} from '@gyojiro/autoskeleton-react';
+
+const NAV_LINKS = ['Features', 'Pricing', 'Docs', 'Blog'];
+
+function Navbar({ loading, user }) {
+  // NavbarSkeleton renders logo + nav links + right-side actions in one component
+  if (loading) {
+    return <NavbarSkeleton showLogo navLinks={4} actions={3} />;
+  }
+
+  return (
+    <nav className="card px-5 py-3 flex items-center gap-6">
+      <div className="flex items-center gap-2">
+        <img className="w-7 h-7 rounded-lg" src="/logo.svg" />
+        <span>AppName</span>
+      </div>
+      <div className="flex-1 hidden sm:flex items-center gap-5">
+        {NAV_LINKS.map(l => <a key={l} href="#">{l}</a>)}
+      </div>
+      <div className="flex items-center gap-2 ml-auto sm:ml-0">
+        <button>Search</button>
+        <button className="btn-primary">Get Started</button>
+        <img className="w-8 h-8 rounded-full" src={user.avatar} />
+      </div>
+    </nav>
+  );
+}`;
+
+const CODE_SEARCH_RESULTS = `import {
+  TextSkeleton, SkeletonGroup, Skeleton,
+} from '@gyojiro/autoskeleton-react';
+
+function SearchResults({ loading, query, results }) {
+  return (
+    <div className="space-y-3">
+      {/* Search bar */}
+      <div className="card flex items-center gap-3 px-4 h-12">
+        {loading ? (
+          <SkeletonGroup direction="row" gap={10} align="center" style={{ flex: 1 }}>
+            <Skeleton size={18} radius="sm" />
+            <TextSkeleton lines={1} lineHeight={16} lastLineWidth="40%" />
+          </SkeletonGroup>
+        ) : (
+          <>
+            <span>⌕</span>
+            <span>{query}</span>
+            <span>{results.length} results</span>
+          </>
+        )}
+      </div>
+
+      {/* Result cards — one TextSkeleton with randomizeWidths replaces 3 separate ones */}
+      {loading
+        ? Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="card p-4">
+              <TextSkeleton
+                lines={4} lineHeight={16} gap={6}
+                randomizeWidths minLineWidth={35} maxLineWidth={88}
+              />
+            </div>
+          ))
+        : results.map(r => (
+            <div key={r.url} className="card p-4">
+              <p className="url">{r.url}</p>
+              <a href={r.url}>{r.title}</a>
+              <p>{r.snippet}</p>
+            </div>
+          ))}
+    </div>
+  );
+}`;
+
 /* ─── ExampleCard ──────────────────────────────────────────────────────────── */
 
 function ExampleCard({
   title,
   span = 1,
+  code,
   children,
 }: {
   title: string;
   span?: 1 | 2;
+  code?: string;
   children: (loading: boolean) => React.ReactNode;
 }) {
-  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<'skeleton' | 'content' | 'code'>('skeleton');
+  const [copied, setCopied] = useState(false);
+
+  const loading = view === 'skeleton';
+
+  const copyCode = useCallback(() => {
+    if (!code) return;
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [code]);
+
+  const btnBase = 'px-2.5 py-1 text-xs font-medium rounded-md transition-all';
+  const btnActive = `${btnBase} bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100`;
+  const btnInactive = `${btnBase} text-slate-400 hover:text-slate-600 dark:hover:text-slate-300`;
+
+  const dotColor = view === 'skeleton'
+    ? 'bg-amber-400 animate-pulse'
+    : view === 'content'
+    ? 'bg-emerald-400'
+    : 'bg-violet-400';
+
   return (
     <div className={span === 2 ? 'md:col-span-2' : ''}>
+      {/* Toolbar */}
       <div className="flex items-center justify-between mb-3 gap-2 min-h-[28px]">
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">{title}</p>
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <span className="hidden sm:flex items-center gap-1.5">
-            <span className={`size-1.5 rounded-full flex-shrink-0 transition-colors ${loading ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
-            <span className="text-xs font-mono text-slate-400">{loading ? 'skeleton' : 'loaded'}</span>
+            <span className={`size-1.5 rounded-full flex-shrink-0 transition-colors ${dotColor}`} />
+            <span className="text-xs font-mono text-slate-400">{view}</span>
           </span>
           <div className="flex gap-px p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
-            <button
-              onClick={() => setLoading(true)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${loading ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
-            >Skeleton</button>
-            <button
-              onClick={() => setLoading(false)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${!loading ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
-            >Content</button>
+            <button onClick={() => setView('skeleton')} className={view === 'skeleton' ? btnActive : btnInactive}>
+              Skeleton
+            </button>
+            <button onClick={() => setView('content')} className={view === 'content' ? btnActive : btnInactive}>
+              Content
+            </button>
+            {code && (
+              <button onClick={() => setView('code')} className={view === 'code' ? btnActive : btnInactive}>
+                Code
+              </button>
+            )}
           </div>
         </div>
       </div>
-      {children(loading)}
+
+      {/* Code view */}
+      {view === 'code' && code ? (
+        <div className="rounded-xl bg-slate-950 border border-slate-800 overflow-hidden shadow-lg">
+          <div className="flex items-center justify-between pl-4 pr-2 py-2.5 border-b border-slate-800">
+            <span className="text-xs font-mono text-slate-400">{title.replace(/ /g, '')}.tsx</span>
+            <button
+              onClick={copyCode}
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors px-2 py-1 rounded hover:bg-white/5"
+            >
+              {copied
+                ? <><Check size={12} className="text-emerald-400" /> Copied</>
+                : <><Copy size={12} /> Copy</>}
+            </button>
+          </div>
+          <pre className="p-4 text-xs font-mono overflow-x-auto leading-relaxed max-h-[480px] overflow-y-auto text-slate-200">
+            <code dangerouslySetInnerHTML={{ __html: highlightTsx(code) }} />
+          </pre>
+        </div>
+      ) : (
+        children(loading)
+      )}
     </div>
   );
 }
@@ -188,7 +1045,7 @@ function SocialPost({ l }: { l: boolean }) {
         )}
 
         {l ? (
-          <ImageSkeleton aspectRatio="16/9" />
+          <ImageSkeleton aspectRatio="16/9" className="aspect-video !h-auto" />
         ) : (
           <div className="w-full aspect-video rounded-lg bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
             <span className="text-slate-400 text-sm">Post image</span>
@@ -319,7 +1176,7 @@ function BlogArticle({ l }: { l: boolean }) {
   return (
     <div className={CARD}>
       {l ? (
-        <ImageSkeleton aspectRatio="16/9" radius="none" />
+        <ImageSkeleton aspectRatio="16/9" radius="none" className="aspect-video !h-auto" />
       ) : (
         <div className="w-full aspect-video bg-gradient-to-br from-indigo-50 to-rose-50 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
           <span className="text-slate-400 text-sm">Cover image</span>
@@ -389,7 +1246,7 @@ function VideoCard({ l }: { l: boolean }) {
     <div className={CARD}>
       <div className="relative">
         {l ? (
-          <ImageSkeleton aspectRatio="16/9" radius="none" />
+          <ImageSkeleton aspectRatio="16/9" radius="none" className="aspect-video !h-auto" />
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
             <span className="text-slate-400 text-3xl">▶</span>
@@ -445,7 +1302,7 @@ function ProductCard({ l }: { l: boolean }) {
     <div className={CARD}>
       <div className="relative">
         {l ? (
-          <ImageSkeleton aspectRatio="3/4" radius="none" />
+          <ImageSkeleton aspectRatio="3/4" radius="none" className="aspect-[3/4] !h-auto" />
         ) : (
           <div className="w-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center" style={{ aspectRatio: '3/4' }}>
             <span className="text-slate-400 text-sm">Product image</span>
@@ -566,7 +1423,7 @@ function ProductDetail({ l }: { l: boolean }) {
     <div className={`${CARD} p-6`}>
       <div className="grid md:grid-cols-2 gap-8">
         {l ? (
-          <ImageSkeleton aspectRatio="1" />
+          <ImageSkeleton aspectRatio="1" radius="lg" className="aspect-square !h-auto" />
         ) : (
           <div className="w-full aspect-square rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
             <span className="text-slate-400">Product Image</span>
@@ -1018,7 +1875,7 @@ function MusicPlayer({ l }: { l: boolean }) {
     <div className={`${CARD} p-5 space-y-4`}>
       <div className="flex items-center gap-4">
         {l ? (
-          <ImageSkeleton aspectRatio="1" width={72} />
+          <ImageSkeleton aspectRatio="1" width={72} radius="lg" className="aspect-square !h-auto" style={{ flexShrink: 0 }} />
         ) : (
           <div className="w-[72px] h-[72px] flex-shrink-0 rounded-xl bg-gradient-to-br from-violet-400 to-indigo-600 flex items-center justify-center text-white text-2xl">♪</div>
         )}
@@ -1208,39 +2065,39 @@ export default function ExamplesPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-12">
 
           <Sec title="Profiles & Social" count={4}>
-            <ExampleCard title="User Profile">{(l) => <UserProfile l={l} />}</ExampleCard>
-            <ExampleCard title="Social Post">{(l) => <SocialPost l={l} />}</ExampleCard>
-            <ExampleCard title="Notification List">{(l) => <NotificationList l={l} />}</ExampleCard>
-            <ExampleCard title="Comment Thread">{(l) => <CommentThread l={l} />}</ExampleCard>
+            <ExampleCard title="User Profile" code={CODE_USER_PROFILE}>{(l) => <UserProfile l={l} />}</ExampleCard>
+            <ExampleCard title="Social Post" code={CODE_SOCIAL_POST}>{(l) => <SocialPost l={l} />}</ExampleCard>
+            <ExampleCard title="Notification List" code={CODE_NOTIFICATION_LIST}>{(l) => <NotificationList l={l} />}</ExampleCard>
+            <ExampleCard title="Comment Thread" code={CODE_COMMENT_THREAD}>{(l) => <CommentThread l={l} />}</ExampleCard>
           </Sec>
 
           <Sec title="Content" count={2}>
-            <ExampleCard title="Blog Article">{(l) => <BlogArticle l={l} />}</ExampleCard>
-            <ExampleCard title="Video Card">{(l) => <VideoCard l={l} />}</ExampleCard>
+            <ExampleCard title="Blog Article" code={CODE_BLOG_ARTICLE}>{(l) => <BlogArticle l={l} />}</ExampleCard>
+            <ExampleCard title="Video Card" code={CODE_VIDEO_CARD}>{(l) => <VideoCard l={l} />}</ExampleCard>
           </Sec>
 
           <Sec title="E-commerce" count={3}>
-            <ExampleCard title="Product Card">{(l) => <ProductCard l={l} />}</ExampleCard>
-            <ExampleCard title="Pricing Card">{(l) => <PricingCard l={l} />}</ExampleCard>
-            <ExampleCard title="Product Detail" span={2}>{(l) => <ProductDetail l={l} />}</ExampleCard>
+            <ExampleCard title="Product Card" code={CODE_PRODUCT_CARD}>{(l) => <ProductCard l={l} />}</ExampleCard>
+            <ExampleCard title="Pricing Card" code={CODE_PRICING_CARD}>{(l) => <PricingCard l={l} />}</ExampleCard>
+            <ExampleCard title="Product Detail" span={2} code={CODE_PRODUCT_DETAIL}>{(l) => <ProductDetail l={l} />}</ExampleCard>
           </Sec>
 
           <Sec title="Dashboard & Data" count={2}>
-            <ExampleCard title="Analytics Dashboard" span={2}>{(l) => <AnalyticsDashboard l={l} />}</ExampleCard>
-            <ExampleCard title="Data Table" span={2}>{(l) => <DataTable l={l} />}</ExampleCard>
+            <ExampleCard title="Analytics Dashboard" span={2} code={CODE_ANALYTICS_DASHBOARD}>{(l) => <AnalyticsDashboard l={l} />}</ExampleCard>
+            <ExampleCard title="Data Table" span={2} code={CODE_DATA_TABLE}>{(l) => <DataTable l={l} />}</ExampleCard>
           </Sec>
 
           <Sec title="Forms & Communication" count={3}>
-            <ExampleCard title="Login Form">{(l) => <LoginForm l={l} />}</ExampleCard>
-            <ExampleCard title="Chat Conversation">{(l) => <Chat l={l} />}</ExampleCard>
-            <ExampleCard title="Settings Panel" span={2}>{(l) => <SettingsPanel l={l} />}</ExampleCard>
+            <ExampleCard title="Login Form" code={CODE_LOGIN_FORM}>{(l) => <LoginForm l={l} />}</ExampleCard>
+            <ExampleCard title="Chat Conversation" code={CODE_CHAT}>{(l) => <Chat l={l} />}</ExampleCard>
+            <ExampleCard title="Settings Panel" span={2} code={CODE_SETTINGS_PANEL}>{(l) => <SettingsPanel l={l} />}</ExampleCard>
           </Sec>
 
           <Sec title="Navigation & More" count={4}>
-            <ExampleCard title="Sidebar Navigation">{(l) => <SidebarNav l={l} />}</ExampleCard>
-            <ExampleCard title="Music Player">{(l) => <MusicPlayer l={l} />}</ExampleCard>
-            <ExampleCard title="Navbar" span={2}>{(l) => <Navbar l={l} />}</ExampleCard>
-            <ExampleCard title="Search Results" span={2}>{(l) => <SearchResults l={l} />}</ExampleCard>
+            <ExampleCard title="Sidebar Navigation" code={CODE_SIDEBAR_NAV}>{(l) => <SidebarNav l={l} />}</ExampleCard>
+            <ExampleCard title="Music Player" code={CODE_MUSIC_PLAYER}>{(l) => <MusicPlayer l={l} />}</ExampleCard>
+            <ExampleCard title="Navbar" span={2} code={CODE_NAVBAR}>{(l) => <Navbar l={l} />}</ExampleCard>
+            <ExampleCard title="Search Results" span={2} code={CODE_SEARCH_RESULTS}>{(l) => <SearchResults l={l} />}</ExampleCard>
           </Sec>
 
         </div>

@@ -52,6 +52,34 @@ function Code({ children }: { children: React.ReactNode }) {
   );
 }
 
+function highlightTsx(raw: string): string {
+  const saved: string[] = [];
+  const save = (html: string) => { saved.push(html); return `\x00${saved.length - 1}\x00`; };
+  let s = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  s = s.replace(/(\{?\/\*[\s\S]*?\*\/\}?)/g,
+    m => save(`<span style="color:#6b7280;font-style:italic">${m}</span>`));
+  s = s.replace(/(^\/\/[^\n]*)/gm,
+    m => save(`<span style="color:#6b7280;font-style:italic">${m}</span>`));
+  s = s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,
+    m => save(`<span style="color:#4ade80">${m}</span>`));
+  s = s.replace(/(?<!\x00)\b(\d+(?:\.\d+)?)(?!\x00)\b/g,
+    (_, n) => save(`<span style="color:#fb923c">${n}</span>`));
+  s = s.replace(/\b(true|false|null|undefined)\b/g,
+    (_, kw) => save(`<span style="color:#fb923c">${kw}</span>`));
+  s = s.replace(/\b(import|export|default|from|const|let|var|function|return|if|else|typeof|type|interface|extends|as|async|await)\b/g,
+    (_, kw) => save(`<span style="color:#c084fc">${kw}</span>`));
+  s = s.replace(/(?<=&lt;\/?)\b([A-Z][A-Za-z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#67e8f9">${n}</span>`));
+  s = s.replace(/(?<=&lt;\/?)\b([a-z][a-z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#f97583">${n}</span>`));
+  s = s.replace(/\b([a-zA-Z][a-zA-Z0-9]*)(?=\s*=\s*(?:\{|"|\d))/g,
+    (_, n) => save(`<span style="color:#93c5fd">${n}</span>`));
+  s = s.replace(/(?<=\.)([a-zA-Z][a-zA-Z0-9]*)\b/g,
+    (_, n) => save(`<span style="color:#a5b4fc">${n}</span>`));
+  s = s.replace(/\x00(\d+)\x00/g, (_, i) => saved[+i]);
+  return s;
+}
+
 function CodeBlock({ code, language = "tsx" }: { code: string; language?: string }) {
   const [copied, setCopied] = useState(false);
   function handleCopy() {
@@ -70,8 +98,8 @@ function CodeBlock({ code, language = "tsx" }: { code: string; language?: string
           {copied ? "Copied!" : "Copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
-        <code className="text-slate-300">{code}</code>
+      <pre className="overflow-x-auto p-4 text-sm leading-relaxed text-slate-200">
+        <code dangerouslySetInnerHTML={{ __html: highlightTsx(code) }} />
       </pre>
     </div>
   );

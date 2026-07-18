@@ -1,0 +1,25 @@
+<svg width="240" height="52" viewBox="0 0 240 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>AutoSkeleton</title>
+  <!-- Icon (40×40) — light card version; stroke-width scaled up so 2px renders at 0.3125 scale -->
+  <g transform="translate(6,6) scale(0.3125)">
+    <rect width="128" height="128" rx="22" fill="#F4F4F5"/>
+    <rect x="1" y="1" width="126" height="126" rx="21" stroke="#E4E4E7" stroke-width="6.4"/>
+    <circle cx="34" cy="34" r="14" fill="#6366F1"/>
+    <rect x="56" y="26" width="52" height="10" rx="5" fill="#D4D4D8"/>
+    <rect x="56" y="42" width="36" height="10" rx="5" fill="#E4E4E7"/>
+    <rect x="20" y="66" width="88" height="10" rx="5" fill="#D4D4D8"/>
+    <rect x="20" y="82" width="72" height="10" rx="5" fill="#E4E4E7"/>
+    <rect x="20" y="98" width="54" height="10" rx="5" fill="#D4D4D8"/>
+  </g>
+  <!-- Wordmark — for use on light backgrounds -->
+  <text
+    x="54"
+    y="26"
+    font-family="'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="22"
+    font-weight="600"
+    dominant-baseline="middle"
+    letter-spacing="-0.3">
+    <tspan fill="#18181B">Auto</tspan><tspan fill="#71717A">Skeleton</tspan>
+  </text>
+</svg>

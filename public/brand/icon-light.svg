@@ -1,0 +1,15 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>AutoSkeleton</title>
+  <!-- Card with subtle border -->
+  <rect width="128" height="128" rx="22" fill="#FFFFFF"/>
+  <rect x="1" y="1" width="126" height="126" rx="21" stroke="#E4E4E7" stroke-width="2"/>
+  <!-- Avatar placeholder -->
+  <circle cx="34" cy="34" r="14" fill="#6366F1"/>
+  <!-- Name / subtitle placeholders -->
+  <rect x="56" y="26" width="52" height="10" rx="5" fill="#D4D4D8"/>
+  <rect x="56" y="42" width="36" height="10" rx="5" fill="#E4E4E7"/>
+  <!-- Content line placeholders -->
+  <rect x="20" y="66" width="88" height="10" rx="5" fill="#D4D4D8"/>
+  <rect x="20" y="82" width="72" height="10" rx="5" fill="#E4E4E7"/>
+  <rect x="20" y="98" width="54" height="10" rx="5" fill="#D4D4D8"/>
+</svg>
