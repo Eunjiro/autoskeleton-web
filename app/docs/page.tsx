@@ -3,14 +3,11 @@ import Link from "next/link";
 import { useState } from "react";
 import Header from "@/components/Header";
 import {
-  SkeletonProvider,
+  
   SkeletonGroup,
   AvatarSkeleton,
   TextSkeleton,
-  ButtonSkeleton,
   ImageSkeleton,
-  CardSkeleton,
-  DARK_THEME,
 } from "@gyojiro/autoskeleton-react";
 import { DarkThemeToggleDemo } from "@/components/SkeletonDemos";
 

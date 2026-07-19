@@ -34,9 +34,9 @@ function StatCard({ loaded, label, value, delta }: { loaded: boolean; label: str
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3.5">
       {!loaded ? (
         <SkeletonGroup gap={6}>
-          <TextSkeleton lines={1} lineHeight={11} lastLineWidth="62%" />
+          <TextSkeleton lines={1} lineHeight={10} lastLineWidth="62%" />
           <TextSkeleton lines={1} lineHeight={24} lastLineWidth="48%" />
-          <TextSkeleton lines={1} lineHeight={11} lastLineWidth="38%" />
+          <TextSkeleton lines={1} lineHeight={10} lastLineWidth="38%" />
         </SkeletonGroup>
       ) : (
         <>
