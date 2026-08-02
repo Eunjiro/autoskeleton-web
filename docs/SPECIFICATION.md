@@ -47,6 +47,7 @@ Atomic:
 
 Composites:
   CardSkeleton
+  ChartSkeleton
   ArticleSkeleton
   ProfileSkeleton
   TableSkeleton
@@ -63,6 +64,7 @@ Composites:
   NavbarSkeleton
   PricingCardSkeleton
   TimelineSkeleton
+  StoriesBarSkeleton
 
 Hook:
   useSkeleton
@@ -76,6 +78,8 @@ Types:
   SkeletonAnimationDirection
   SkeletonRadius
   SkeletonVariant
+  SkeletonBreakpoint
+  ResponsiveValue<T>
 ```
 
 Internal utilities (`getRadiusValue`, `getSkeletonDimensions`, etc.) are not exported.
@@ -177,7 +181,9 @@ The primitive building block.
 
 | Prop | Type | Default |
 |---|---|---|
-| `direction` | `"row" \| "column"` | `"column"` |
+| `layout` | `"flex" \| "grid"` | `"flex"` |
+| `columns` | `ResponsiveValue<number \| string>` | — |
+| `direction` | `ResponsiveValue<"row" \| "column">` | `"column"` |
 | `gap` | `number \| string` | `16` |
 | `padding` | `number \| string` | `0` |
 | `align` | `CSSProperties["alignItems"]` | `"stretch"` |
@@ -189,6 +195,26 @@ The primitive building block.
 **Behavior:**
 - When `aria-label` provided: `role="status"` + `aria-busy`
 - Merges theme from parent context with group-level overrides via `useMemo`
+- `layout="grid"`: renders `display: grid` and derives `grid-template-columns`
+  from `columns` (a number renders `repeat(columns, 1fr)`; a string is used
+  verbatim). `direction` is ignored in this mode.
+- `columns`/`direction` accept a `{ base, sm, md, lg, xl }` object instead of
+  a constant value to vary by the group's own rendered width (`sm`=480px,
+  `md`=640px, `lg`=800px, `xl`=1024px), via a CSS `@container` query scoped
+  to that instance — not the viewport, so a grid nested in a narrow sidebar
+  responds to the sidebar's width. Implemented with `useId()` for a unique,
+  SSR-safe scoping class plus an injected `<style>` tag; only adds that
+  wrapper/tag when a responsive value is actually used.
+- Percentage-width children (e.g. `Skeleton`'s default `width: "100%"`,
+  `TextSkeleton`'s line wrapper) automatically get `flex-basis: 0` +
+  `flex-grow: 1` when they're the main-axis flex item of a `direction="row"`
+  group — otherwise a flex item's main-axis size defaults to content size,
+  which a percentage width can't contribute to, so it collapses to 0 instead
+  of filling the row. Not needed for `layout="grid"` (grid cells resolve
+  percentages normally) or for a responsive `direction` at breakpoints other
+  than `base` (that switch happens purely in CSS and isn't visible to this
+  mechanism — give such children an explicit `width`/`flex` if you need a
+  guaranteed fill at every breakpoint).
 
 ---
 
@@ -255,8 +281,9 @@ When `aspectRatio` is set, `height` becomes `undefined` and CSS `aspect-ratio` t
 | `lines` | `number` | `3` |
 | `gap` | `number \| string` | `12` |
 | `padding` | `number \| string` | `16` |
+| `children` | `ReactNode` | — |
 
-Composed from: `ImageSkeleton`, `AvatarSkeleton`, `TextSkeleton`, `ButtonSkeleton`, `SkeletonGroup`.
+Composed from: `ImageSkeleton`, `AvatarSkeleton`, `TextSkeleton`, `ButtonSkeleton`, `SkeletonGroup`. `children`, if provided, is appended after the default composition (image → avatar row → text → button) rather than replacing it — for a near-miss layout that's the standard card plus one or two extra elements.
 
 ---
 
@@ -266,22 +293,24 @@ All composite components accept theme override props and are wrapped with `React
 
 | Component | Key Props |
 |---|---|
-| `ArticleSkeleton` | `showImage`, `lines`, `showAuthor` |
-| `ProfileSkeleton` | `showCover`, `showBio`, `showStats`, `showButton` |
+| `ArticleSkeleton` | `showHeroImage`, `bodyLines`, `showAuthor` |
+| `ProfileSkeleton` | `avatarSize`, `bioLines`, `statsCount`, `showButton`, `children` |
 | `TableSkeleton` | `rows`, `columns`, `showHeader` |
 | `ListSkeleton` | `items`, `showIcon`, `iconSize` |
-| `DashboardSkeleton` | `cards`, `showChart`, `showTable` |
+| `DashboardSkeleton` | `statCards`, `showChart`, `chartType`, `tableRows` |
 | `FormSkeleton` | `fields`, `showButton` |
-| `StatisticCardSkeleton` | `showIcon`, `showTrend` |
-| `MediaObjectSkeleton` | `imageWidth`, `imageHeight`, `lines` |
+| `StatisticCardSkeleton` | `showIcon`, `metricWidth` |
+| `MediaObjectSkeleton` | `mediaSize`, `mediaShape`, `lines` |
 | `CommentSkeleton` | `lines`, `avatarSize` |
 | `ChatMessageSkeleton` | `messages` |
-| `ProductCardSkeleton` | `showBadge`, `showRating`, `showButton` |
+| `ProductCardSkeleton` | `showRating`, `showButton` |
 | `GallerySkeleton` | `items`, `columns` |
 | `SidebarSkeleton` | `navItems`, `showLogo`, `showProfile` |
-| `NavbarSkeleton` | `navItems`, `showLogo`, `showButton` |
+| `NavbarSkeleton` | `navLinks`, `showLogo`, `actions` |
 | `PricingCardSkeleton` | `features`, `showBadge` |
-| `TimelineSkeleton` | `items` |
+| `TimelineSkeleton` | `events` |
+| `ChartSkeleton` | `type` (`"bar" \| "line" \| "donut"`), `height`, `points` |
+| `StoriesBarSkeleton` | `items`, `avatarSize`, `showLabel` |
 
 ---
 
@@ -302,9 +331,9 @@ All animations use CSS custom properties for duration, easing, and direction. Al
 
 | Value | Border Radius |
 |---|---|
-| `"default"` | From theme radius |
-| `"rounded"` | `9999px` |
-| `"circle"` | `50%` + equal width/height |
+| `"default"` | `radius` prop, falling back to theme `radius` |
+| `"rounded"` | `radius` prop if set, otherwise `9999px` (pill) regardless of theme `radius` |
+| `"circle"` | `50%` + equal width/height — ignores `radius` entirely |
 
 ---
 
@@ -339,6 +368,8 @@ All public APIs are fully typed. The library exports:
 - `SkeletonAnimationDirection`
 - `SkeletonRadius`
 - `SkeletonVariant`
+- `SkeletonBreakpoint`
+- `ResponsiveValue<T>`
 - All component prop types (e.g. `SkeletonProps`, `SkeletonProviderProps`, etc.)
 
 Type inference works without manual generics.

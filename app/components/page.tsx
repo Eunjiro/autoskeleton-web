@@ -9,6 +9,7 @@ import {
   ImageSkeletonDemo,
   ArticleSkeletonDemo,
   CardSkeletonDemo,
+  ChartSkeletonDemo,
   ChatMessageSkeletonDemo,
   CommentSkeletonDemo,
   DashboardSkeletonDemo,
@@ -22,6 +23,7 @@ import {
   ProfileSkeletonDemo,
   SidebarSkeletonDemo,
   StatisticCardSkeletonDemo,
+  StoriesBarSkeletonDemo,
   TableSkeletonDemo,
   TimelineSkeletonDemo,
   ThemeCustomizationDemo,
@@ -65,7 +67,9 @@ const skeletonBaseProps: PropRow[] = [
 const groupBaseProps: PropRow[] = [
   { name: "gap", type: "number | string", defaultValue: "16", description: "Space between children." },
   { name: "padding", type: "number | string", defaultValue: "0", description: "Inner padding." },
-  { name: "direction", type: '"row" | "column"', defaultValue: '"column"', description: "Flex direction." },
+  { name: "layout", type: '"flex" | "grid"', defaultValue: '"flex"', description: "CSS grid instead of flexbox; direction is ignored in this mode." },
+  { name: "columns", type: "ResponsiveValue<number | string>", defaultValue: "—", description: "Grid column count (or raw grid-template-columns). Only applies when layout=\"grid\"." },
+  { name: "direction", type: 'ResponsiveValue<"row" | "column">', defaultValue: '"column"', description: "Flex direction. Accepts { base, sm, md, lg, xl } to vary by the group's own width via a CSS container query." },
   { name: "align", type: "CSSProperties[alignItems]", defaultValue: '"stretch"', description: "Cross-axis alignment (align-items)." },
   { name: "justify", type: "CSSProperties[justifyContent]", defaultValue: '"flex-start"', description: "Main-axis alignment (justify-content)." },
   { name: "animation", type: "SkeletonAnimation", defaultValue: "inherited", description: "Overrides animation for all descendants." },
@@ -332,9 +336,10 @@ const COMPONENTS: ComponentEntry[] = [
       { name: "avatarSize", type: "number", defaultValue: "48", description: "Avatar diameter (requires showAvatar)." },
       { name: "lines", type: "number", defaultValue: "3", description: "Number of text lines." },
       { name: "lastLineWidth", type: "number | string", defaultValue: '"70%"', description: "Width of the last text line." },
+      { name: "children", type: "ReactNode", defaultValue: "—", description: "Extra content appended after the button, for a near-miss layout without reimplementing the card." },
       ...groupBaseProps.filter((p) => !["direction", "align", "justify"].includes(p.name)),
     ],
-    code: `import { CardSkeleton } from "@gyojiro/autoskeleton-react";
+    code: `import { CardSkeleton, Skeleton } from "@gyojiro/autoskeleton-react";
 
 // Default column card
 <CardSkeleton />
@@ -346,8 +351,31 @@ const COMPONENTS: ComponentEntry[] = [
 <CardSkeleton showAvatar lines={4} />
 
 // Content-only card
-<CardSkeleton showImage={false} lines={5} />`,
+<CardSkeleton showImage={false} lines={5} />
+
+// Standard card + a badge, without reimplementing the layout
+<CardSkeleton showAvatar>
+  <Skeleton width={64} height={22} radius="full" />
+</CardSkeleton>`,
     Demo: CardSkeletonDemo,
+  },
+  {
+    id: "chart-skeleton",
+    name: "ChartSkeleton",
+    category: "Composites",
+    tagline: "Bar, line, or donut chart placeholder — for dashboard chart regions instead of a flat rectangle.",
+    props: [
+      { name: "type", type: '"bar" | "line" | "donut"', defaultValue: '"bar"', description: "Chart shape to mimic." },
+      { name: "height", type: "number", defaultValue: "240", description: "Chart area height in pixels (also the diameter for \"donut\")." },
+      { name: "points", type: "number", defaultValue: "7", description: "Number of bars to render. Only applies to type=\"bar\"." },
+      ...groupBaseProps.filter((p) => !["direction", "align"].includes(p.name)),
+    ],
+    code: `import { ChartSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChartSkeleton type="bar" />
+<ChartSkeleton type="line" height={200} />
+<ChartSkeleton type="donut" height={160} />`,
+    Demo: ChartSkeletonDemo,
   },
   {
     id: "chat-message-skeleton",
@@ -447,10 +475,10 @@ const COMPONENTS: ComponentEntry[] = [
     tagline: "CSS-grid image gallery with configurable columns, count, and aspect ratio.",
     props: [
       { name: "items", type: "number", defaultValue: "9", description: "Total number of image placeholders." },
-      { name: "columns", type: "number", defaultValue: "3", description: "Number of grid columns." },
+      { name: "columns", type: "ResponsiveValue<number>", defaultValue: "3", description: "Number of grid columns. Accepts { base, sm, md, lg, xl } to vary by container width." },
       { name: "aspectRatio", type: "string", defaultValue: '"1"', description: 'CSS aspect-ratio for each cell (e.g. "16/9").' },
       { name: "cellGap", type: "number", defaultValue: "8", description: "Gap between cells in pixels." },
-      ...groupBaseProps.filter((p) => !["direction"].includes(p.name)),
+      ...groupBaseProps.filter((p) => !["direction", "layout", "columns"].includes(p.name)),
     ],
     code: `import { GallerySkeleton } from "@gyojiro/autoskeleton-react";
 
@@ -592,9 +620,10 @@ const COMPONENTS: ComponentEntry[] = [
       { name: "bioLines", type: "number", defaultValue: "2", description: "Number of bio text lines." },
       { name: "statsCount", type: "number", defaultValue: "3", description: "Stat columns (followers / following / posts). Set to 0 to hide." },
       { name: "showButton", type: "boolean", defaultValue: "true", description: "Show a follow/connect button." },
+      { name: "children", type: "ReactNode", defaultValue: "—", description: "Extra content appended after the button, for a near-miss layout without reimplementing the profile block." },
       ...groupBaseProps.filter((p) => !["direction", "align"].includes(p.name)),
     ],
-    code: `import { ProfileSkeleton } from "@gyojiro/autoskeleton-react";
+    code: `import { ProfileSkeleton, Skeleton } from "@gyojiro/autoskeleton-react";
 
 // Default profile
 <ProfileSkeleton />
@@ -603,7 +632,12 @@ const COMPONENTS: ComponentEntry[] = [
 <ProfileSkeleton avatarSize={96} bioLines={3} />
 
 // No stats or button
-<ProfileSkeleton statsCount={0} showButton={false} />`,
+<ProfileSkeleton statsCount={0} showButton={false} />
+
+// Standard profile + a verified badge
+<ProfileSkeleton>
+  <Skeleton width={80} height={16} radius="full" />
+</ProfileSkeleton>`,
     Demo: ProfileSkeletonDemo,
   },
   {
@@ -652,6 +686,25 @@ const COMPONENTS: ComponentEntry[] = [
     Demo: StatisticCardSkeletonDemo,
   },
   {
+    id: "stories-bar-skeleton",
+    name: "StoriesBarSkeleton",
+    category: "Composites",
+    tagline: "Horizontally-scrolling avatar row — Instagram/Snapchat-style stories bar, or an avatar/chip carousel.",
+    props: [
+      { name: "items", type: "number", defaultValue: "6", description: "Number of items in the row." },
+      { name: "avatarSize", type: "number", defaultValue: "64", description: "Diameter of each avatar in pixels." },
+      { name: "showLabel", type: "boolean", defaultValue: "true", description: "Show a short label placeholder under each avatar." },
+      ...groupBaseProps.filter((p) => !["direction", "align"].includes(p.name)),
+    ],
+    code: `import { StoriesBarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<StoriesBarSkeleton items={8} />
+
+// Chips without labels
+<StoriesBarSkeleton items={10} avatarSize={40} showLabel={false} />`,
+    Demo: StoriesBarSkeletonDemo,
+  },
+  {
     id: "table-skeleton",
     name: "TableSkeleton",
     category: "Composites",
@@ -663,7 +716,7 @@ const COMPONENTS: ComponentEntry[] = [
       { name: "headerHeight", type: "number", defaultValue: "20", description: "Height of header cells." },
       { name: "rowHeight", type: "number", defaultValue: "16", description: "Height of data cells." },
       { name: "rowGap", type: "number", defaultValue: "12", description: "Vertical gap between rows." },
-      ...groupBaseProps.filter((p) => !["direction"].includes(p.name)),
+      ...groupBaseProps.filter((p) => !["direction", "layout", "columns"].includes(p.name)),
     ],
     code: `import { TableSkeleton } from "@gyojiro/autoskeleton-react";
 
@@ -881,7 +934,10 @@ export default function ComponentsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-1">Components</h1>
             <p className="text-slate-500 dark:text-slate-400">
-              {COMPONENTS.length} components — 3 primitives, 4 atomic, 17 composites
+              {COMPONENTS.length} components —{" "}
+              {CATEGORIES.map(
+                (cat) => `${COMPONENTS.filter((c) => c.category === cat).length} ${cat.toLowerCase()}`,
+              ).join(", ")}
             </p>
           </div>
         </div>

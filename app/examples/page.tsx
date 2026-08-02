@@ -5,10 +5,28 @@ import { Copy, Check } from 'lucide-react';
 import {
   Skeleton,
   SkeletonGroup,
+  SkeletonProvider,
   TextSkeleton,
   AvatarSkeleton,
   ButtonSkeleton,
   ImageSkeleton,
+  ProfileSkeleton,
+  CardSkeleton,
+  ArticleSkeleton,
+  GallerySkeleton,
+  ProductCardSkeleton,
+  PricingCardSkeleton,
+  DashboardSkeleton,
+  FormSkeleton,
+  ChatMessageSkeleton,
+  CommentSkeleton,
+  TimelineSkeleton,
+  ListSkeleton,
+  MediaObjectSkeleton,
+  SidebarSkeleton,
+  NavbarSkeleton,
+  StoriesBarSkeleton,
+  DARK_THEME,
 } from '@gyojiro/autoskeleton-react';
 
 /* ─── Shared constants ─────────────────────────────────────────────────────── */
@@ -822,6 +840,147 @@ function SearchResults({ loading, query, results }) {
     </div>
   );
 }`;
+
+/* ─── Drop-in component code snippets ──────────────────────────────────────── *
+ * Unlike the snippets above (which show what hand-tuned code *would* look    *
+ * like), these are exactly what's rendered — the skeleton view below really  *
+ * is the named composite component, imported directly.                      *
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+const CODE_PROFILE_HEADER = `import { ProfileSkeleton } from '@gyojiro/autoskeleton-react';
+
+<ProfileSkeleton avatarSize={72} bioLines={2} statsCount={3} />`;
+
+const CODE_CONTENT_CARD = `import { CardSkeleton } from '@gyojiro/autoskeleton-react';
+
+<CardSkeleton showAvatar imageHeight={160} lines={2} />`;
+
+const CODE_ARTICLE_PAGE = `import { ArticleSkeleton } from '@gyojiro/autoskeleton-react';
+
+<ArticleSkeleton heroHeight={180} bodyLines={4} />`;
+
+const CODE_PHOTO_GRID = `import { GallerySkeleton } from '@gyojiro/autoskeleton-react';
+
+<GallerySkeleton items={9} columns={3} aspectRatio="1" />`;
+
+const CODE_PRODUCT_GRID = `import { ProductCardSkeleton } from '@gyojiro/autoskeleton-react';
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+  {products.map((p) => <ProductCardSkeleton key={p.id} imageHeight={140} />)}
+</div>`;
+
+const CODE_PRICING_TIERS = `import { PricingCardSkeleton } from '@gyojiro/autoskeleton-react';
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+  <PricingCardSkeleton features={4} />
+  <PricingCardSkeleton features={4} showBadge />
+  <PricingCardSkeleton features={4} />
+</div>`;
+
+const CODE_ADMIN_DASHBOARD = `import { DashboardSkeleton } from '@gyojiro/autoskeleton-react';
+
+// Composes StatisticCardSkeleton + ChartSkeleton + TableSkeleton internally
+<DashboardSkeleton statCards={4} chartType="bar" tableRows={4} />`;
+
+const CODE_ACCOUNT_FORM = `import { FormSkeleton } from '@gyojiro/autoskeleton-react';
+
+<FormSkeleton fields={4} showSubmitButton />`;
+
+const CODE_TEAM_CHAT = `import { ChatMessageSkeleton } from '@gyojiro/autoskeleton-react';
+
+<ChatMessageSkeleton messages={5} />`;
+
+const CODE_COMMENTS = `import { CommentSkeleton } from '@gyojiro/autoskeleton-react';
+
+<CommentSkeleton items={3} showActions />`;
+
+const CODE_ACTIVITY_TIMELINE = `import { TimelineSkeleton } from '@gyojiro/autoskeleton-react';
+
+<TimelineSkeleton events={4} lines={2} />`;
+
+const CODE_FEED_LIST = `import { ListSkeleton } from '@gyojiro/autoskeleton-react';
+
+<ListSkeleton items={5} showTrailing />`;
+
+const CODE_SEARCH_ROW = `import { MediaObjectSkeleton } from '@gyojiro/autoskeleton-react';
+
+{results.map((r) => (
+  <MediaObjectSkeleton key={r.id} mediaSize={56} lines={2} />
+))}`;
+
+const CODE_APP_SHELL = `import { SidebarSkeleton, NavbarSkeleton } from '@gyojiro/autoskeleton-react';
+
+<div style={{ display: 'flex', height: 320 }}>
+  <div style={{ width: 200 }}><SidebarSkeleton navItems={5} /></div>
+  <div style={{ flex: 1 }}>
+    <NavbarSkeleton navLinks={0} actions={2} />
+  </div>
+</div>`;
+
+const CODE_STORIES_ROW = `import { StoriesBarSkeleton } from '@gyojiro/autoskeleton-react';
+
+<StoriesBarSkeleton items={8} avatarSize={56} />`;
+
+const CODE_DARK_MODE = `import { SkeletonProvider, DARK_THEME, CardSkeleton } from '@gyojiro/autoskeleton-react';
+
+// One prop switches every skeleton in the subtree to dark-mode colors
+<SkeletonProvider {...DARK_THEME}>
+  <CardSkeleton showAvatar />
+</SkeletonProvider>`;
+
+/* ─── Creative example code snippets ───────────────────────────────────────── */
+
+const CODE_PIANO = `import { Skeleton, SkeletonGroup } from '@gyojiro/autoskeleton-react';
+
+// Skeletons don't have to represent loading UI at all —
+// they're just animated, themeable rectangles and circles.
+<SkeletonGroup direction="row" gap={2}>
+  {keys.map((k) => (
+    <Skeleton key={k} width={28} height={120} radius="sm" />
+  ))}
+</SkeletonGroup>`;
+
+const CODE_EQUALIZER = `import { Skeleton, SkeletonGroup } from '@gyojiro/autoskeleton-react';
+
+<SkeletonGroup direction="row" gap={4} align="flex-end" style={{ height: 80 }}>
+  {bars.map((h, i) => (
+    <Skeleton
+      key={i}
+      width={6}
+      height={h}
+      radius="full"
+      animation="pulse"
+      style={{ animationDelay: \`\${i * 90}ms\` }}
+    />
+  ))}
+</SkeletonGroup>`;
+
+const CODE_HEATMAP = `import { SkeletonGroup, Skeleton } from '@gyojiro/autoskeleton-react';
+
+<SkeletonGroup layout="grid" columns={26} gap={3}>
+  {cells.map((intensity, i) => (
+    <Skeleton key={i} width={10} height={10} radius="sm"
+      style={{ opacity: 0.15 + intensity * 0.85 }} />
+  ))}
+</SkeletonGroup>`;
+
+const CODE_QR = `import { SkeletonGroup, Skeleton } from '@gyojiro/autoskeleton-react';
+
+<SkeletonGroup layout="grid" columns={12} gap={2} animation="none">
+  {cells.map((filled, i) => (
+    <Skeleton key={i} width={10} height={10} radius="none"
+      style={{ opacity: filled ? 1 : 0 }} />
+  ))}
+</SkeletonGroup>`;
+
+const CODE_CONSTELLATION = `import { AvatarSkeleton } from '@gyojiro/autoskeleton-react';
+
+// Absolute-positioned circles of varying size — a starfield, not an avatar
+{stars.map((s) => (
+  <div key={s.id} style={{ position: 'absolute', left: s.x, top: s.y }}>
+    <AvatarSkeleton size={s.size} animation="fade" />
+  </div>
+))}`;
 
 /* ─── ExampleCard ──────────────────────────────────────────────────────────── */
 
@@ -2025,6 +2184,541 @@ function SearchResults({ l }: { l: boolean }) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
+   EXAMPLES — Section 7: Drop-in Components (the real thing, not hand-tuned)
+══════════════════════════════════════════════════════════════════════════════ */
+
+function ProfileHeaderExample({ l }: { l: boolean }) {
+  return (
+    <div className={`${CARD} p-6`}>
+      {l ? (
+        <ProfileSkeleton avatarSize={72} bioLines={2} statsCount={3} />
+      ) : (
+        <div className="flex flex-col items-center text-center gap-3">
+          <div className="w-[72px] h-[72px] rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-xl">MK</div>
+          <div>
+            <p className="font-semibold text-slate-900 dark:text-slate-100">Maya Kim</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-[220px]">Product designer building small, useful things.</p>
+          </div>
+          <div className="flex gap-6 text-sm">
+            {[['482', 'Posts'], ['12.4K', 'Followers'], ['890', 'Following']].map(([n, label]) => (
+              <div key={label} className="text-center">
+                <p className="font-semibold text-slate-900 dark:text-slate-100">{n}</p>
+                <p className="text-xs text-slate-400">{label}</p>
+              </div>
+            ))}
+          </div>
+          <button className="w-full h-9 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition">Follow</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContentCardExample({ l }: { l: boolean }) {
+  return (
+    <div className={CARD}>
+      {l ? (
+        <div className="p-4">
+          <CardSkeleton showAvatar imageHeight={160} lines={2} padding={0} />
+        </div>
+      ) : (
+        <div className="p-4 space-y-3">
+          <div className="w-full h-40 rounded-lg bg-gradient-to-br from-sky-100 to-indigo-100 dark:from-sky-900/30 dark:to-indigo-900/30 flex items-center justify-center text-slate-400 text-sm">Cover image</div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-semibold text-xs">TL</div>
+            <div>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Tom Lin</p>
+              <p className="text-xs text-slate-400">Senior Engineer</p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-300">How we cut CI build times by 60% with incremental caching.</p>
+          <button className="h-9 px-4 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium">Read more</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ArticlePageExample({ l }: { l: boolean }) {
+  return (
+    <div className={`${CARD} p-6`}>
+      {l ? (
+        <ArticleSkeleton heroHeight={180} bodyLines={4} />
+      ) : (
+        <div className="space-y-4">
+          <div className="w-full h-[180px] rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center text-slate-400 text-sm">Hero image</div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">The Case for Boring Infrastructure</h2>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center text-rose-700 dark:text-rose-300 font-semibold text-xs">JD</div>
+            <div>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Jordan Diaz</p>
+              <p className="text-xs text-slate-400">6 min read · Mar 12</p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            Every team eventually learns the same lesson: the most valuable infrastructure decisions
+            are the ones nobody notices, because nothing ever breaks. This is a case for choosing
+            dependable over novel, every time it&apos;s a close call.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PhotoGridExample({ l }: { l: boolean }) {
+  return (
+    <div className={`${CARD} p-4`}>
+      {l ? (
+        <GallerySkeleton items={9} columns={3} aspectRatio="1" cellGap={6} />
+      ) : (
+        <div className="grid grid-cols-3 gap-1.5">
+          {['from-rose-200 to-orange-200 dark:from-rose-900/40 dark:to-orange-900/40',
+            'from-sky-200 to-indigo-200 dark:from-sky-900/40 dark:to-indigo-900/40',
+            'from-emerald-200 to-teal-200 dark:from-emerald-900/40 dark:to-teal-900/40'].flatMap((grad, gi) =>
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={`${gi}-${i}`} className={`aspect-square rounded-md bg-gradient-to-br ${grad}`} />
+            )),
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProductGridExample({ l }: { l: boolean }) {
+  const products = [
+    { name: 'Ceramic Mug', price: '$18', color: 'from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30' },
+    { name: 'Canvas Tote', price: '$32', color: 'from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30' },
+    { name: 'Desk Lamp', price: '$64', color: 'from-sky-100 to-indigo-100 dark:from-sky-900/30 dark:to-indigo-900/30' },
+  ];
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {l
+        ? products.map((_, i) => <ProductCardSkeleton key={i} imageHeight={110} showRating={false} />)
+        : products.map((p) => (
+            <div key={p.name} className={CARD}>
+              <div className={`w-full h-[110px] bg-gradient-to-br ${p.color} flex items-center justify-center text-slate-400 text-xs`}>Photo</div>
+              <div className="p-3 space-y-1">
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{p.name}</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{p.price}</p>
+              </div>
+            </div>
+          ))}
+    </div>
+  );
+}
+
+function PricingTiersExample({ l }: { l: boolean }) {
+  const tiers = [
+    { name: 'Starter', price: '$0', badge: false },
+    { name: 'Pro', price: '$29', badge: true },
+    { name: 'Team', price: '$79', badge: false },
+  ];
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {l
+        ? tiers.map((t, i) => <PricingCardSkeleton key={i} features={3} showBadge={t.badge} />)
+        : tiers.map((t) => (
+            <div key={t.name} className={`${CARD} p-4 space-y-3 text-center ${t.badge ? 'ring-2 ring-indigo-500' : ''}`}>
+              {t.badge && <span className="text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">Popular</span>}
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t.name}</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.price}</p>
+              <button className="w-full h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition">Choose</button>
+            </div>
+          ))}
+    </div>
+  );
+}
+
+function AdminDashboardExample({ l }: { l: boolean }) {
+  const stats = [
+    { label: 'Revenue', value: '$48.2K' },
+    { label: 'Users', value: '2,840' },
+    { label: 'Orders', value: '412' },
+    { label: 'Refunds', value: '1.2%' },
+  ];
+  return (
+    <div className={`${CARD} p-5 space-y-5`}>
+      {l ? (
+        <DashboardSkeleton statCards={4} chartType="bar" tableRows={0} />
+      ) : (
+        <>
+          <div className="grid grid-cols-4 gap-3">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-lg border border-slate-200 dark:border-slate-800 p-3">
+                <p className="text-xs text-slate-400">{s.label}</p>
+                <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-0.5">{s.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="h-40 rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-end gap-2 p-4">
+            {[45, 70, 55, 85, 60, 40, 75].map((h, i) => (
+              <div key={i} className="flex-1 bg-indigo-400 dark:bg-indigo-500 rounded-t" style={{ height: `${h}%` }} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function AccountFormExample({ l }: { l: boolean }) {
+  const fields = [
+    { label: 'Full name', value: 'Priya Nair' },
+    { label: 'Email', value: 'priya@acme.com' },
+    { label: 'Company', value: 'Acme Inc.' },
+    { label: 'Role', value: 'Engineering Lead' },
+  ];
+  return (
+    <div className={`${CARD} p-5`}>
+      {l ? (
+        <FormSkeleton fields={4} showSubmitButton />
+      ) : (
+        <div className="space-y-4">
+          {fields.map((f) => (
+            <div key={f.label}>
+              <label className="text-xs text-slate-500 dark:text-slate-400">{f.label}</label>
+              <div className="mt-1 h-10 rounded-lg border border-slate-200 dark:border-slate-700 px-3 flex items-center text-sm text-slate-800 dark:text-slate-200">{f.value}</div>
+            </div>
+          ))}
+          <button className="h-11 px-5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition">Save changes</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TeamChatExample({ l }: { l: boolean }) {
+  const messages = [
+    { fromMe: false, text: 'Did the staging deploy go out?' },
+    { fromMe: true, text: 'Yep, just landed 🚀' },
+    { fromMe: false, text: 'Nice, checking now' },
+  ];
+  return (
+    <div className={`${CARD} p-4`}>
+      {l ? (
+        <ChatMessageSkeleton messages={5} />
+      ) : (
+        <div className="space-y-2.5">
+          {messages.map((m, i) => (
+            <div key={i} className={`flex ${m.fromMe ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[75%] px-3.5 py-2 rounded-2xl text-sm ${m.fromMe ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'}`}>
+                {m.text}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CommentsExample({ l }: { l: boolean }) {
+  const comments = [
+    { init: 'RP', name: 'Ryan Park', text: 'This solved my exact problem, thank you!' },
+    { init: 'AL', name: 'Amara Lee', text: 'Would love to see a dark mode example too.' },
+  ];
+  return (
+    <div className={`${CARD} p-5`}>
+      {l ? (
+        <CommentSkeleton items={3} showActions />
+      ) : (
+        <div className="space-y-4">
+          {comments.map((c) => (
+            <div key={c.name} className="flex gap-3">
+              <div className="w-9 h-9 flex-shrink-0 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-700 dark:text-violet-300 font-semibold text-xs">{c.init}</div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{c.name}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{c.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ActivityTimelineExample({ l }: { l: boolean }) {
+  const events = [
+    { title: 'Order shipped', time: 'Today, 9:41 AM' },
+    { title: 'Payment confirmed', time: 'Yesterday, 4:12 PM' },
+    { title: 'Order placed', time: 'Yesterday, 3:58 PM' },
+  ];
+  return (
+    <div className={`${CARD} p-5`}>
+      {l ? (
+        <TimelineSkeleton events={4} lines={1} />
+      ) : (
+        <div className="space-y-0">
+          {events.map((e, i) => (
+            <div key={e.title} className="flex gap-3 pb-4 last:pb-0">
+              <div className="flex flex-col items-center flex-shrink-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                {i < events.length - 1 && <span className="w-px flex-1 bg-slate-200 dark:bg-slate-700 mt-1" />}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{e.title}</p>
+                <p className="text-xs text-slate-400">{e.time}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FeedListExample({ l }: { l: boolean }) {
+  const items = ['Inbox', 'Starred', 'Snoozed', 'Sent'];
+  return (
+    <div className={`${CARD} p-2`}>
+      {l ? (
+        <ListSkeleton items={5} showTrailing />
+      ) : (
+        <div>
+          {items.map((label, i) => (
+            <div key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/60">
+              <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 text-xs flex-shrink-0">{label[0]}</span>
+              <span className="flex-1 text-sm text-slate-700 dark:text-slate-300">{label}</span>
+              <span className="text-xs text-slate-400">{[3, 12, 1, 40][i]}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SearchRowExample({ l }: { l: boolean }) {
+  const results = [
+    { name: 'Elena Petrova', role: 'Backend Engineer, remote', color: 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300' },
+    { name: 'Devon Wright', role: 'Design Systems Lead', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
+  ];
+  return (
+    <div className={`${CARD} p-5 space-y-4`}>
+      {l ? (
+        <SkeletonGroup gap={20}>
+          {[0, 1].map((i) => <MediaObjectSkeleton key={i} mediaSize={56} lines={2} />)}
+        </SkeletonGroup>
+      ) : (
+        results.map((r) => (
+          <div key={r.name} className="flex gap-3.5">
+            <div className={`w-14 h-14 flex-shrink-0 rounded-lg ${r.color} flex items-center justify-center font-semibold`}>{r.name.split(' ').map((w) => w[0]).join('')}</div>
+            <div>
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{r.name}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{r.role}</p>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+function AppShellExample({ l }: { l: boolean }) {
+  const navItems = ['Overview', 'Projects', 'Team', 'Settings'];
+  return (
+    <div className={`${CARD} flex overflow-hidden`} style={{ height: 260 }}>
+      <div className="w-44 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 p-3">
+        {l ? (
+          <SidebarSkeleton navItems={4} showProfile={false} />
+        ) : (
+          <div className="space-y-1">
+            {navItems.map((n, i) => (
+              <div key={n} className={`px-2.5 py-1.5 rounded-lg text-sm ${i === 0 ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>{n}</div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex-1 p-4">
+        {l ? (
+          <NavbarSkeleton navLinks={0} actions={2} />
+        ) : (
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <p className="font-semibold text-slate-800 dark:text-slate-200">Overview</p>
+            <div className="flex gap-2">
+              <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800" />
+              <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800" />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StoriesRowExample({ l }: { l: boolean }) {
+  const people = ['Mia', 'Leo', 'Zoe', 'Sam', 'Ana', 'Kai'];
+  const colors = ['bg-rose-400', 'bg-amber-400', 'bg-emerald-400', 'bg-sky-400', 'bg-violet-400', 'bg-pink-400'];
+  return (
+    <div className={`${CARD} p-4`}>
+      {l ? (
+        <StoriesBarSkeleton items={8} avatarSize={56} />
+      ) : (
+        <div className="flex gap-4 overflow-x-auto">
+          {people.map((name, i) => (
+            <div key={name} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+              <div className={`w-14 h-14 rounded-full ${colors[i]} p-0.5`}>
+                <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-xs font-semibold text-slate-700 dark:text-slate-300">{name[0]}</div>
+              </div>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{name}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DarkModeExample({ l }: { l: boolean }) {
+  return (
+    <div className="rounded-xl overflow-hidden bg-slate-900 p-6">
+      {l ? (
+        <SkeletonProvider {...DARK_THEME}>
+          <CardSkeleton showAvatar imageHeight={130} lines={2} padding={0} />
+        </SkeletonProvider>
+      ) : (
+        <div className="space-y-3">
+          <div className="w-full h-[130px] rounded-lg bg-slate-700 flex items-center justify-center text-slate-400 text-sm">Cover image</div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-indigo-500/30 flex items-center justify-center text-indigo-300 font-semibold text-xs">NK</div>
+            <div>
+              <p className="text-sm font-medium text-slate-100">Nadia Khoury</p>
+              <p className="text-xs text-slate-400">Platform Team</p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-300">One prop switches every skeleton in the subtree to dark colors.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   EXAMPLES — Section 8: Creative (not loading UI — just what else you can build)
+══════════════════════════════════════════════════════════════════════════════ */
+
+function CreativeCard({ title, description, code, children }: { title: string; description: string; code: string; children: React.ReactNode }) {
+  const [showCode, setShowCode] = useState(false);
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3 gap-2">
+        <div>
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{title}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{description}</p>
+        </div>
+        <button
+          onClick={() => setShowCode((v) => !v)}
+          className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+        >
+          {showCode ? 'Preview' : 'Code'}
+        </button>
+      </div>
+      {showCode ? (
+        <div className="rounded-xl bg-slate-950 border border-slate-800 overflow-hidden shadow-lg">
+          <pre className="p-4 text-xs font-mono overflow-x-auto leading-relaxed max-h-[300px] overflow-y-auto text-slate-200">
+            <code dangerouslySetInnerHTML={{ __html: highlightTsx(code) }} />
+          </pre>
+        </div>
+      ) : (
+        <div className={`${CARD} p-5 flex items-center justify-center`} style={{ minHeight: 160 }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const PIANO_KEYS = Array.from({ length: 14 }, (_, i) => i);
+
+function PianoExample() {
+  return (
+    <SkeletonGroup direction="row" gap={2}>
+      {PIANO_KEYS.map((k) => (
+        <Skeleton key={k} width={22} height={110} radius="sm" animation="wave" />
+      ))}
+    </SkeletonGroup>
+  );
+}
+
+const EQUALIZER_HEIGHTS = [30, 55, 80, 45, 70, 90, 40, 60, 35, 75, 50, 85, 30, 65];
+
+function EqualizerExample() {
+  return (
+    <SkeletonGroup direction="row" gap={4} align="flex-end" style={{ height: 90 }}>
+      {EQUALIZER_HEIGHTS.map((h, i) => (
+        <Skeleton
+          key={i}
+          width={7}
+          height={h}
+          radius="full"
+          animation="pulse"
+          style={{ animationDelay: `${i * 90}ms` }}
+        />
+      ))}
+    </SkeletonGroup>
+  );
+}
+
+// Deterministic (not Math.random) so this never mismatches between server and
+// client render — see TextSkeleton's randomizeWidths for why that matters.
+const HEATMAP_INTENSITY = Array.from({ length: 130 }, (_, i) => ((i * 37) % 100) / 100);
+
+function HeatmapExample() {
+  return (
+    <SkeletonGroup layout="grid" columns={26} gap={3} animation="none">
+      {HEATMAP_INTENSITY.map((intensity, i) => (
+        <Skeleton
+          key={i}
+          width={10}
+          height={10}
+          radius="sm"
+          style={{ opacity: 0.12 + intensity * 0.88 }}
+        />
+      ))}
+    </SkeletonGroup>
+  );
+}
+
+// A fixed, deterministic pattern — not a real scannable QR code, just its silhouette.
+const QR_PATTERN = Array.from({ length: 144 }, (_, i) => {
+  const row = Math.floor(i / 12);
+  const col = i % 12;
+  const inFinder = (row < 3 && col < 3) || (row < 3 && col > 8) || (row > 8 && col < 3);
+  return inFinder || (row * 7 + col * 13) % 5 === 0;
+});
+
+function QrExample() {
+  return (
+    <SkeletonGroup layout="grid" columns={12} gap={2} animation="none">
+      {QR_PATTERN.map((filled, i) => (
+        <Skeleton key={i} width={12} height={12} radius="none" style={{ opacity: filled ? 1 : 0 }} />
+      ))}
+    </SkeletonGroup>
+  );
+}
+
+const STARS = [
+  { x: 20, y: 20, size: 10 }, { x: 70, y: 45, size: 16 }, { x: 130, y: 15, size: 8 },
+  { x: 180, y: 55, size: 22 }, { x: 40, y: 90, size: 12 }, { x: 110, y: 100, size: 10 },
+  { x: 220, y: 30, size: 14 }, { x: 250, y: 90, size: 9 }, { x: 160, y: 110, size: 18 },
+];
+
+function ConstellationExample() {
+  return (
+    <div className="relative" style={{ width: 280, height: 130 }}>
+      {STARS.map((s, i) => (
+        <div key={i} style={{ position: 'absolute', left: s.x, top: s.y }}>
+          <AvatarSkeleton size={s.size} animation="fade" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
    PAGE
 ══════════════════════════════════════════════════════════════════════════════ */
 
@@ -2039,10 +2733,10 @@ export default function ExamplesPage() {
             Real-World Examples
           </h1>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-6">
-            18 interactive demos — click{' '}
+            39 interactive demos across every component — hand-tuned layouts, drop-in composites,
+            and a few creative detours. Click{' '}
             <span className="font-semibold text-slate-800 dark:text-slate-200">Skeleton</span> or{' '}
             <span className="font-semibold text-slate-800 dark:text-slate-200">Content</span> to instantly compare.
-            Every skeleton precisely mirrors its real UI layout.
           </p>
           <div className="grid sm:grid-cols-3 gap-3 text-sm">
             {[
@@ -2099,6 +2793,64 @@ export default function ExamplesPage() {
             <ExampleCard title="Navbar" span={2} code={CODE_NAVBAR}>{(l) => <Navbar l={l} />}</ExampleCard>
             <ExampleCard title="Search Results" span={2} code={CODE_SEARCH_RESULTS}>{(l) => <SearchResults l={l} />}</ExampleCard>
           </Sec>
+
+          <div className="pt-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+              Everything above hand-tunes primitives for pixel-perfect control. Everything below
+              renders the named composite component directly — no custom styling, just the import.
+            </p>
+          </div>
+
+          <Sec title="Drop-in Components" count={16}>
+            <ExampleCard title="Profile Header" code={CODE_PROFILE_HEADER}>{(l) => <ProfileHeaderExample l={l} />}</ExampleCard>
+            <ExampleCard title="Content Card" code={CODE_CONTENT_CARD}>{(l) => <ContentCardExample l={l} />}</ExampleCard>
+            <ExampleCard title="Article Page" code={CODE_ARTICLE_PAGE}>{(l) => <ArticlePageExample l={l} />}</ExampleCard>
+            <ExampleCard title="Photo Grid" code={CODE_PHOTO_GRID}>{(l) => <PhotoGridExample l={l} />}</ExampleCard>
+            <ExampleCard title="Product Grid" span={2} code={CODE_PRODUCT_GRID}>{(l) => <ProductGridExample l={l} />}</ExampleCard>
+            <ExampleCard title="Pricing Tiers" span={2} code={CODE_PRICING_TIERS}>{(l) => <PricingTiersExample l={l} />}</ExampleCard>
+            <ExampleCard title="Admin Dashboard" span={2} code={CODE_ADMIN_DASHBOARD}>{(l) => <AdminDashboardExample l={l} />}</ExampleCard>
+            <ExampleCard title="Account Form" code={CODE_ACCOUNT_FORM}>{(l) => <AccountFormExample l={l} />}</ExampleCard>
+            <ExampleCard title="Team Chat" code={CODE_TEAM_CHAT}>{(l) => <TeamChatExample l={l} />}</ExampleCard>
+            <ExampleCard title="Comments" code={CODE_COMMENTS}>{(l) => <CommentsExample l={l} />}</ExampleCard>
+            <ExampleCard title="Activity Timeline" code={CODE_ACTIVITY_TIMELINE}>{(l) => <ActivityTimelineExample l={l} />}</ExampleCard>
+            <ExampleCard title="Feed List" code={CODE_FEED_LIST}>{(l) => <FeedListExample l={l} />}</ExampleCard>
+            <ExampleCard title="Search Result Rows" code={CODE_SEARCH_ROW}>{(l) => <SearchRowExample l={l} />}</ExampleCard>
+            <ExampleCard title="App Shell" span={2} code={CODE_APP_SHELL}>{(l) => <AppShellExample l={l} />}</ExampleCard>
+            <ExampleCard title="Stories Row" code={CODE_STORIES_ROW}>{(l) => <StoriesRowExample l={l} />}</ExampleCard>
+            <ExampleCard title="Dark Mode" code={CODE_DARK_MODE}>{(l) => <DarkModeExample l={l} />}</ExampleCard>
+          </Sec>
+
+          <div className="pt-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+              Skeletons are just animated, themeable shapes — nothing ties them to &ldquo;loading state.&rdquo;
+              A few less conventional ways to use the same primitives.
+            </p>
+          </div>
+
+          <section className="space-y-5">
+            <div className="flex items-center gap-3">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white whitespace-nowrap">Creative</h2>
+              <span className="text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">5</span>
+              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <CreativeCard title="Piano Keyboard" description="Skeleton bars as keys — no music, just geometry." code={CODE_PIANO}>
+                <PianoExample />
+              </CreativeCard>
+              <CreativeCard title="Audio Equalizer" description="Staggered pulse delays fake a dancing waveform." code={CODE_EQUALIZER}>
+                <EqualizerExample />
+              </CreativeCard>
+              <CreativeCard title="Contribution Heatmap" description="A GitHub-style grid, driven by per-cell opacity." code={CODE_HEATMAP}>
+                <HeatmapExample />
+              </CreativeCard>
+              <CreativeCard title="QR Code Silhouette" description="A grid.map() and some opacity — that's the whole trick." code={CODE_QR}>
+                <QrExample />
+              </CreativeCard>
+              <CreativeCard title="Constellation" description="AvatarSkeleton circles, absolutely positioned as a starfield." code={CODE_CONSTELLATION}>
+                <ConstellationExample />
+              </CreativeCard>
+            </div>
+          </section>
 
         </div>
       </main>

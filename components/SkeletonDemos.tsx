@@ -8,10 +8,12 @@ import {
   ButtonSkeleton,
   ImageSkeleton,
   CardSkeleton,
+  ChartSkeleton,
   ArticleSkeleton,
   ProfileSkeleton,
   StatisticCardSkeleton,
   MediaObjectSkeleton,
+  StoriesBarSkeleton,
   DARK_THEME,
 } from "@gyojiro/autoskeleton-react";
 import { useState } from "react";
@@ -115,6 +117,22 @@ export function SkeletonGroupDemo() {
           <Skeleton width="100%" height={20} />
           <Skeleton width="75%" height={20} />
           <Skeleton width="50%" height={20} />
+        </SkeletonGroup>
+      </Preview>
+
+      <Preview label='layout="grid" columns={3}'>
+        <SkeletonGroup layout="grid" columns={3} gap={12}>
+          {([0, 1, 2, 3, 4, 5] as const).map((i) => (
+            <Skeleton key={i} height={48} radius="md" />
+          ))}
+        </SkeletonGroup>
+      </Preview>
+
+      <Preview label="Responsive columns: 1 → 3 → 5 as this panel widens (resize the window)">
+        <SkeletonGroup layout="grid" columns={{ base: 1, sm: 3, lg: 5 }} gap={12}>
+          {([0, 1, 2, 3, 4, 5, 6, 7, 8] as const).map((i) => (
+            <Skeleton key={i} height={48} radius="md" />
+          ))}
         </SkeletonGroup>
       </Preview>
     </div>
@@ -226,6 +244,27 @@ export function CardSkeletonDemo() {
       </Preview>
       <Preview label="No image">
         <CardSkeleton showImage={false} lines={4} />
+      </Preview>
+      <Preview label="children: extra content appended after the button">
+        <CardSkeleton showAvatar>
+          <Skeleton width={64} height={22} radius="full" />
+        </CardSkeleton>
+      </Preview>
+    </div>
+  );
+}
+
+export function ChartSkeletonDemo() {
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      <Preview label="Bar">
+        <ChartSkeleton type="bar" height={140} />
+      </Preview>
+      <Preview label="Line">
+        <ChartSkeleton type="line" height={140} />
+      </Preview>
+      <Preview label="Donut">
+        <ChartSkeleton type="donut" height={140} />
       </Preview>
     </div>
   );
@@ -502,6 +541,11 @@ export function ProfileSkeletonDemo() {
     <div className="grid grid-cols-2 gap-4">
       <Preview label="Default"><Card showStats /></Preview>
       <Preview label="Large avatar, no stats"><Card showStats={false} /></Preview>
+      <Preview label="Real ProfileSkeleton + children: a verified badge">
+        <ProfileSkeleton>
+          <Skeleton width={80} height={16} radius="full" />
+        </ProfileSkeleton>
+      </Preview>
     </div>
   );
 }
@@ -545,6 +589,19 @@ export function StatisticCardSkeletonDemo() {
       </Preview>
       <Preview>
         <StatisticCardSkeleton showIcon={false} metricWidth="80%" />
+      </Preview>
+    </div>
+  );
+}
+
+export function StoriesBarSkeletonDemo() {
+  return (
+    <div className="space-y-4">
+      <Preview label="Scrolls instead of shrinking to fit — try a narrow window">
+        <StoriesBarSkeleton items={10} />
+      </Preview>
+      <Preview label="No labels, smaller avatars">
+        <StoriesBarSkeleton items={12} avatarSize={40} showLabel={false} />
       </Preview>
     </div>
   );

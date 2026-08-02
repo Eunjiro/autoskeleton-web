@@ -151,8 +151,7 @@ function LiveDemo() {
                 <div key={i} className="flex items-center gap-3 px-4 py-3">
                   <AvatarSkeleton size={28} />
                   <SkeletonGroup gap={4} style={{ flex: 1 }}>
-                    <TextSkeleton lines={1} lineHeight={12} lastLineWidth="65%" />
-                    <TextSkeleton lines={1} lineHeight={10} lastLineWidth="28%" />
+                    <TextSkeleton lines={2} lineHeight={12} lastLineWidth="20%" />
                   </SkeletonGroup>
                 </div>
               ))
@@ -275,7 +274,7 @@ export default function HomePage() {
                     AutoSkeleton v1.0
                   </div>
                   <div className="w-px h-3.5 bg-violet-200 dark:bg-violet-700" />
-                  <span className="text-xs text-violet-500 dark:text-violet-400">Now Open Source</span>
+                  <span className="text-xs text-violet-500 dark:text-violet-400">Open Source</span>
                 </div>
 
                 {/* Heading */}

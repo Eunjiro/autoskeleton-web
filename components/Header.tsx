@@ -69,8 +69,8 @@ export default function Header() {
               <rect x="20" y="98" width="54" height="10" rx="5" fill="#E5E7EB"/>
             </svg>
             <span className="text-sm font-semibold tracking-tight leading-none">
-              <span className="text-slate-900 dark:text-zinc-100">Auto</span>
-              <span className="text-slate-400 dark:text-zinc-500">Skeleton</span>
+              <span className="text-slate-900 dark:text-zinc-100 text-xl">Auto</span>
+              <span className="text-slate-400 dark:text-zinc-500 text-xl">Skeleton</span>
             </span>
           </Link>
 
