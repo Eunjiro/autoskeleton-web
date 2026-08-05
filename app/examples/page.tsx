@@ -2166,7 +2166,7 @@ function SearchResults({ l }: { l: boolean }) {
   const results = [
     { title: 'Getting Started with AutoSkeleton', url: 'docs.autoskeleton.dev/getting-started', snippet: 'Install AutoSkeleton and add it to your React app in minutes. Import the CSS once and use any component immediately.' },
     { title: 'Theming Guide — AutoSkeleton', url: 'docs.autoskeleton.dev/theming', snippet: 'Use SkeletonProvider to configure animations, colors, and border-radius globally across your entire app.' },
-    { title: 'Component API Reference', url: 'docs.autoskeleton.dev/components', snippet: 'Complete reference for all 24 components including Skeleton, TextSkeleton, AvatarSkeleton, and more.' },
+    { title: 'Component API Reference', url: 'docs.autoskeleton.dev/components', snippet: 'Complete reference for all 26 components including Skeleton, TextSkeleton, AvatarSkeleton, and more.' },
     { title: 'Real World Examples', url: 'docs.autoskeleton.dev/examples', snippet: 'Pixel-perfect skeleton loading states for profiles, dashboards, e-commerce, and more.' },
   ];
   return (

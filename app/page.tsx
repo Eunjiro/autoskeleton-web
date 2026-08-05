@@ -10,7 +10,7 @@ import {
 } from '@gyojiro/autoskeleton-react';
 import {
   Rocket, Code2, Paintbrush, Layers, LayoutGrid, Package,
-  ArrowRight, Copy, Check, Sparkles, Zap,
+  ArrowRight, Copy, Check, Sparkles, Zap, Wand2,
   ExternalLink, Terminal, FileCode,
 } from 'lucide-react';
 
@@ -208,7 +208,7 @@ const FEATURES = [
   { icon: Code2,      title: 'TypeScript First',     desc: 'Fully typed components with intelligent autocomplete and strict type checking out of the box.',   color: 'bg-blue-50    dark:bg-blue-950/30    text-blue-600    dark:text-blue-400'    },
   { icon: Paintbrush, title: 'Fully Customizable',   desc: 'Global theming via SkeletonProvider. Override animation, colors, and radius per instance.',       color: 'bg-violet-50  dark:bg-violet-950/30  text-violet-600  dark:text-violet-400'  },
   { icon: Layers,     title: 'Dark Mode Ready',      desc: 'Built-in dark mode support with sensible defaults that match your design system.',                color: 'bg-slate-100  dark:bg-slate-800      text-slate-700   dark:text-slate-300'   },
-  { icon: LayoutGrid, title: '24+ Components',       desc: 'From atomic primitives to full composites — every UI loading pattern you need is covered.',      color: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400' },
+  { icon: LayoutGrid, title: '26 Components',        desc: 'From atomic primitives to full composites — every UI loading pattern you need is covered.',      color: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400' },
   { icon: Package,    title: 'Tree-Shakable',        desc: 'Import only what you use. Your bundler eliminates the rest. Zero unused bytes shipped.',          color: 'bg-purple-50  dark:bg-purple-950/30  text-purple-600  dark:text-purple-400'  },
 ] as const;
 
@@ -219,7 +219,7 @@ const COMPONENTS = [
   'MediaObjectSkeleton', 'DashboardSkeleton', 'TableSkeleton', 'FormSkeleton',
   'ChatMessageSkeleton', 'CommentSkeleton', 'GallerySkeleton', 'ListSkeleton',
   'NavbarSkeleton', 'PricingCardSkeleton', 'ProductCardSkeleton',
-  'SidebarSkeleton', 'TimelineSkeleton',
+  'SidebarSkeleton', 'TimelineSkeleton', 'ChartSkeleton', 'StoriesBarSkeleton',
 ] as const;
 
 const INSTALL = 'npm install @gyojiro/autoskeleton-react';
@@ -271,7 +271,7 @@ export default function HomePage() {
                 <div className="inline-flex items-center gap-2 pl-2.5 pr-3.5 py-1.5 rounded-full border border-violet-200 dark:border-violet-800/50 bg-violet-50/80 dark:bg-violet-950/40 backdrop-blur-sm">
                   <div className="flex items-center gap-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300">
                     <Sparkles size={12} strokeWidth={2.5} />
-                    AutoSkeleton v1.0
+                    AutoSkeleton v1.1
                   </div>
                   <div className="w-px h-3.5 bg-violet-200 dark:bg-violet-700" />
                   <span className="text-xs text-violet-500 dark:text-violet-400">Open Source</span>
@@ -286,7 +286,7 @@ export default function HomePage() {
                     </span>
                   </h1>
                   <p className="text-lg text-slate-600 dark:text-slate-400 max-w-[480px] leading-relaxed">
-                    24+ TypeScript-first skeleton components that mirror your real UI layout.
+                    26 TypeScript-first skeleton components that mirror your real UI layout.
                     Zero configuration. Fully customizable. Dark mode built in.
                   </p>
                 </div>
@@ -313,7 +313,7 @@ export default function HomePage() {
                 {/* Stats */}
                 <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
                   {[
-                    { v: '24+', l: 'Components' },
+                    { v: '26', l: 'Components' },
                     { v: '100%', l: 'TypeScript' },
                     { v: 'React 18+', l: 'Compatible' },
                     { v: '0', l: 'Dependencies' },
@@ -455,6 +455,64 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ═══ TWO WAYS TO BUILD ═══════════════════════════════════════════════ */}
+        <section className="py-24 bg-white dark:bg-slate-950">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div className="text-center mb-14 space-y-3">
+              <p className="text-xs font-bold text-violet-600 dark:text-violet-400 tracking-[0.2em] uppercase">Two Ways to Build</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Ship fast. Or match pixel-for-pixel.
+              </h2>
+              <p className="text-base text-slate-500 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
+                Every real page is a little different from the demo. AutoSkeleton doesn&apos;t make you choose
+                between convenience and control — reach for whichever your design actually needs.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-5 bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400">
+                  <Package size={20} strokeWidth={2} />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Drop in a composite</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-5">
+                  19 pre-built composites — <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-violet-600 dark:text-violet-400">ArticleSkeleton</code>,{' '}
+                  <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-violet-600 dark:text-violet-400">DashboardSkeleton</code>,{' '}
+                  <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-violet-600 dark:text-violet-400">ChatMessageSkeleton</code>, and
+                  more — cover almost every common layout. Import one, pass a few props, ship it. No custom styling required.
+                </p>
+                <Link href="/components"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+                >
+                  Browse components
+                  <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+
+              <div className="group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-5 bg-fuchsia-50 dark:bg-fuchsia-950/30 text-fuchsia-600 dark:text-fuchsia-400">
+                  <Wand2 size={20} strokeWidth={2} />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Freestyle with primitives</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-5">
+                  Got a category badge, a tags row, an icon no composite anticipated? Compose{' '}
+                  <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-fuchsia-600 dark:text-fuchsia-400">Skeleton</code>,{' '}
+                  <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-fuchsia-600 dark:text-fuchsia-400">TextSkeleton</code>, and{' '}
+                  <code className="text-xs bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono text-fuchsia-600 dark:text-fuchsia-400">SkeletonGroup</code>{' '}
+                  by hand until every shape lines up with your real content.
+                </p>
+                <Link href="/examples"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-fuchsia-600 dark:text-fuchsia-400 hover:text-fuchsia-700 dark:hover:text-fuchsia-300 transition-colors"
+                >
+                  See it composed
+                  <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ═══ COMPONENT GALLERY ════════════════════════════════════════════════ */}
         <section className="py-24 bg-slate-50 dark:bg-slate-900/30 border-t border-slate-200/60 dark:border-slate-800/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -463,7 +521,7 @@ export default function HomePage() {
               <div>
                 <p className="text-xs font-bold text-violet-600 dark:text-violet-400 tracking-[0.2em] uppercase mb-3">Components</p>
                 <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  24+ ready-to-use components.
+                  26 ready-to-use components.
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-xl leading-relaxed text-base">
                   From atomic{' '}
