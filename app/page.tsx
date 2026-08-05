@@ -456,7 +456,7 @@ export default function HomePage() {
         </section>
 
         {/* ═══ TWO WAYS TO BUILD ═══════════════════════════════════════════════ */}
-        <section className="py-24 bg-white dark:bg-slate-950">
+        <section className="py-24 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800/60">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div className="text-center mb-14 space-y-3">
