@@ -1071,9 +1071,9 @@ function ExampleCard({
 
 /* ─── Section ──────────────────────────────────────────────────────────────── */
 
-function Sec({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
+function Sec({ id, title, count, children }: { id?: string; title: string; count: number; children: React.ReactNode }) {
   return (
-    <section className="space-y-5">
+    <section id={id} className="space-y-5 scroll-mt-20">
       <div className="flex items-center gap-3">
         <h2 className="text-base font-bold text-slate-900 dark:text-white whitespace-nowrap">{title}</h2>
         <span className="text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">{count}</span>
@@ -2851,14 +2851,32 @@ export default function ExamplesPage() {
             <ExampleCard title="Search Results" span={2} code={CODE_SEARCH_RESULTS}>{(l) => <SearchResults l={l} />}</ExampleCard>
           </Sec>
 
-          <div className="pt-4">
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
-              Everything above hand-tunes primitives for pixel-perfect control. Everything below
-              renders the named composite component directly — no custom styling, just the import.
-            </p>
+          <div className="pt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 space-y-4">
+            <div className="grid sm:grid-cols-2 gap-5 sm:gap-8">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-500 mb-1">↑ Above · Freestyle</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Built from primitives — <span className="font-medium text-slate-800 dark:text-slate-200">Skeleton</span>,{' '}
+                  <span className="font-medium text-slate-800 dark:text-slate-200">TextSkeleton</span>,{' '}
+                  <span className="font-medium text-slate-800 dark:text-slate-200">SkeletonGroup</span>{' '}
+                  — hand-composed until every shape lines up with the real content. This is what you reach for
+                  once your design has a piece no composite covers: a category badge, a tags row, an oddly-sized
+                  icon. Same primitives the composites are made of — you&apos;re just wiring them up yourself.
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-500 mb-1">↓ Below · Drop-in</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  The named composite component, used exactly as exported — no custom styling, just the import.
+                  Reach for these first; between the 19 composites on{' '}
+                  <a href="/components" className="font-medium text-slate-800 dark:text-slate-200 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-400">/components</a>{' '}
+                  and their props, most real layouts are one import away.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <Sec title="Drop-in Components" count={16}>
+          <Sec id="drop-in-components" title="Drop-in Components" count={16}>
             <ExampleCard title="Profile Header" code={CODE_PROFILE_HEADER}>{(l) => <ProfileHeaderExample l={l} />}</ExampleCard>
             <ExampleCard title="Content Card" code={CODE_CONTENT_CARD}>{(l) => <ContentCardExample l={l} />}</ExampleCard>
             <ExampleCard title="Article Page" code={CODE_ARTICLE_PAGE}>{(l) => <ArticlePageExample l={l} />}</ExampleCard>
