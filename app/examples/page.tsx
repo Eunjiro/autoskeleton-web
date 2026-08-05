@@ -1187,7 +1187,11 @@ function SocialPost({ l }: { l: boolean }) {
             )}
           </div>
           {l ? (
-            <Skeleton size={18} radius="sm" />
+            // `size` only applies to variant="circle" — the default variant
+            // ignores it and falls back to width:"100%", which was blowing up
+            // this row's flex-shrink math and starving the name/timestamp
+            // block (flex-basis:0%) of any space at all.
+            <Skeleton width={18} height={18} radius="sm" />
           ) : (
             <button className="text-slate-400 text-lg leading-none px-1">···</button>
           )}
