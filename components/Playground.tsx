@@ -214,7 +214,9 @@ function ArticleSkeletonPlaygroundContent() {
       </ControlPanel>
 
       <div className="space-y-4 min-w-0">
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+        {/* Capped height + its own scroll — a tall hero/many body lines
+            shouldn't be able to push the code panel below the fold. */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 max-h-[420px] overflow-y-auto">
           <ArticleSkeleton
             showHeroImage={showHeroImage}
             heroHeight={heroHeight}
@@ -223,7 +225,9 @@ function ArticleSkeletonPlaygroundContent() {
             showHeading={showHeading}
           />
         </div>
-        <CodeOutput code={code} />
+        <div className="sticky bottom-0 bg-white dark:bg-slate-900 pt-1">
+          <CodeOutput code={code} />
+        </div>
       </div>
     </div>
   );
