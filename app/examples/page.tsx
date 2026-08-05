@@ -1215,8 +1215,9 @@ function SocialPost({ l }: { l: boolean }) {
 
         <div className="flex items-center gap-5 pt-1">
           {l ? (
+            // Raw Skeleton, not TextSkeleton — see the tag-row fix above for why.
             <SkeletonGroup direction="row" gap={20}>
-              {([0, 1, 2] as const).map(i => <TextSkeleton key={i} lines={1} lineHeight={14} lastLineWidth={40} />)}
+              {([0, 1, 2] as const).map(i => <Skeleton key={i} width={40} height={14} />)}
             </SkeletonGroup>
           ) : (
             <>
