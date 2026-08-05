@@ -10,7 +10,7 @@ import {
 } from '@gyojiro/autoskeleton-react';
 import {
   Rocket, Code2, Paintbrush, Layers, LayoutGrid, Package,
-  ArrowRight, Copy, Check, Sparkles, Zap, Wand2,
+  ArrowRight, Copy, Check, Sparkles, Zap, Wand2, GitFork,
   ExternalLink, Terminal, FileCode,
 } from 'lucide-react';
 
@@ -456,7 +456,11 @@ export default function HomePage() {
         </section>
 
         {/* ═══ TWO WAYS TO BUILD ═══════════════════════════════════════════════ */}
-        <section className="py-24 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800/60">
+        <section className="relative py-24 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800/60">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm shadow-slate-900/5">
+            <GitFork size={18} strokeWidth={2} className="text-violet-500 dark:text-violet-400" />
+          </div>
+
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div className="text-center mb-14 space-y-3">
