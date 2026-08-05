@@ -1102,9 +1102,7 @@ function UserProfile({ l }: { l: boolean }) {
         <div className="flex-1 min-w-0 pt-1">
           {l ? (
             <SkeletonGroup gap={5}>
-              <TextSkeleton lines={1} lineHeight={20} lastLineWidth="55%" />
-              <TextSkeleton lines={1} lineHeight={16} lastLineWidth="74%" />
-              <TextSkeleton lines={1} lineHeight={16} lastLineWidth="60%" />
+              <TextSkeleton lines={3} lineHeight={20} lastLineWidth="55%" randomizeWidths/>
             </SkeletonGroup>
           ) : (
             <div>
@@ -1196,7 +1194,7 @@ function SocialPost({ l }: { l: boolean }) {
         </div>
 
         {l ? (
-          <TextSkeleton lines={3} lineHeight={20} gap={5} lastLineWidth="60%" />
+          <TextSkeleton lines={2} lineHeight={20} gap={5} lastLineWidth="60%" />
         ) : (
           <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
             Just shipped our new design system! 🎉 After 3 months of work, it&apos;s finally live. 40+ components with full dark mode support.
@@ -1295,11 +1293,16 @@ function CommentThread({ l }: { l: boolean }) {
             <div key={i} className="flex gap-3 px-4 py-4">
               <AvatarSkeleton size={34} />
               <div className="flex-1 space-y-2">
+                {/* Raw Skeleton, not TextSkeleton — TextSkeleton's wrapper always
+                    flex-grows to an equal share of a row (needed elsewhere so a
+                    percentage width doesn't collapse to 0), so two TextSkeletons
+                    here would always be equal-width boxes no matter what width
+                    you ask for. A fixed px Skeleton sizes intrinsically instead. */}
                 <SkeletonGroup direction="row" gap={12}>
-                  <TextSkeleton lines={1} lineHeight={14} lastLineWidth={90} />
-                  <TextSkeleton lines={1} lineHeight={14} lastLineWidth={60} />
+                  <Skeleton width={72} height={14} />
+                  <Skeleton width={64} height={14} />
                 </SkeletonGroup>
-                <TextSkeleton lines={2} lineHeight={18} gap={4} lastLineWidth="85%" />
+                <TextSkeleton lines={1} lineHeight={18} gap={4} lastLineWidth="85%" />
                 <SkeletonGroup direction="row" gap={12}>
                   <Skeleton width={36} height={12} />
                   <Skeleton width={40} height={12} />
