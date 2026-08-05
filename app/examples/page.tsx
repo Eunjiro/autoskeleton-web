@@ -73,773 +73,570 @@ function highlightTsx(raw: string): string {
 /* ─── Code snippets ─────────────────────────────────────────────────────────── */
 
 const CODE_USER_PROFILE = `import {
-  ProfileSkeleton,
+  AvatarSkeleton, SkeletonGroup, TextSkeleton, ButtonSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function UserProfile({ loading, user }) {
-  // ProfileSkeleton handles avatar + name + bio lines + button in one shot
-  if (loading) {
-    return (
-      <div className="card p-5">
-        <ProfileSkeleton avatarSize={56} bioLines={3} statsCount={0} showButton />
-      </div>
-    );
-  }
-
-  return (
-    <div className="card p-5">
-      <div className="flex items-start gap-4">
-        <img className="w-14 h-14 rounded-full" src={user.avatar} />
-        <div>
-          <h3>{user.name}</h3>
-          <p>{user.role} · {user.location}</p>
-        </div>
-      </div>
-      <p className="mt-4">{user.bio}</p>
-      <div className="flex gap-3 mt-4">
-        <button>Follow</button>
-        <button>Message</button>
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="flex items-start gap-4 p-5">
+    <AvatarSkeleton size={64} />
+    <div style={{ flex: 1 }}>
+      <SkeletonGroup gap={5}>
+        <TextSkeleton lines={3} lineHeight={20} lastLineWidth="55%" randomizeWidths />
+      </SkeletonGroup>
     </div>
-  );
-}`;
+  </div>
+
+  <div className="px-5 pb-4">
+    <TextSkeleton lines={2} lineHeight={20} gap={5} lastLineWidth="80%" />
+  </div>
+
+  {/* Stats row */}
+  <div className="flex gap-6 px-5 py-3 border-t">
+    {[0, 1, 2].map(i => (
+      <SkeletonGroup key={i} gap={4}>
+        <TextSkeleton lines={1} lineHeight={22} lastLineWidth={40} />
+        <TextSkeleton lines={1} lineHeight={13} lastLineWidth={52} />
+      </SkeletonGroup>
+    ))}
+  </div>
+
+  <div className="flex gap-2.5 px-5 py-4 border-t">
+    <div style={{ flex: 1 }}><ButtonSkeleton width="100%" height={38} /></div>
+    <ButtonSkeleton width={38} height={38} />
+  </div>
+</div>`;
 
 const CODE_SOCIAL_POST = `import {
   AvatarSkeleton, TextSkeleton, ImageSkeleton,
   SkeletonGroup, Skeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function SocialPost({ loading, post }) {
-  return (
-    <div className="card p-4 space-y-3">
-      {/* Author row */}
-      <div className="flex items-center gap-3">
-        {loading
-          ? <AvatarSkeleton size={40} />
-          : <img className="w-10 h-10 rounded-full" src={post.author.avatar} />}
-
-        <div style={{ flex: 1 }}>
-          {/* One TextSkeleton, 2 lines, random widths — replaces two separate skeletons */}
-          {loading
-            ? <TextSkeleton lines={2} lineHeight={14} gap={4}
-                randomizeWidths minLineWidth={22} maxLineWidth={52} />
-            : (
-                <>
-                  <p>{post.author.name}</p>
-                  <p>{post.createdAt}</p>
-                </>
-              )}
-        </div>
-
-        {loading ? <Skeleton size={18} radius="sm" /> : <button>···</button>}
-      </div>
-
-      {/* Body text */}
-      {loading
-        ? <TextSkeleton lines={3} lineHeight={20} gap={5} lastLineWidth="60%" />
-        : <p>{post.body}</p>}
-
-      {/* Post image */}
-      {loading
-        ? <ImageSkeleton aspectRatio="16/9" className="aspect-video !h-auto" />
-        : <img className="w-full rounded-lg" src={post.image} />}
-
-      {/* Reactions */}
-      {loading ? (
-        <SkeletonGroup direction="row" gap={20}>
-          <TextSkeleton lines={1} lineHeight={14} lastLineWidth={35} />
-          <TextSkeleton lines={1} lineHeight={14} lastLineWidth={45} />
-        </SkeletonGroup>
-      ) : (
-        <div className="flex gap-5">
-          <button>♥ {post.likes}</button>
-          <button>💬 {post.comments}</button>
-        </div>
-      )}
+// Rendered while loading
+<div className="card p-4 space-y-3">
+  {/* Author row */}
+  <div className="flex items-center gap-3">
+    <AvatarSkeleton size={40} />
+    <div style={{ flex: 1 }}>
+      <SkeletonGroup gap={4}>
+        <TextSkeleton lines={1} lineHeight={16} lastLineWidth="42%" />
+        <TextSkeleton lines={1} lineHeight={12} lastLineWidth="24%" />
+      </SkeletonGroup>
     </div>
-  );
-}`;
+    {/* size only applies to variant="circle" — width/height for every other variant */}
+    <Skeleton width={18} height={18} radius="sm" />
+  </div>
+
+  {/* Body text */}
+  <TextSkeleton lines={2} lineHeight={20} gap={5} lastLineWidth="60%" />
+
+  {/* Post image */}
+  <ImageSkeleton aspectRatio="16/9" />
+
+  {/* Reactions — raw Skeleton, not TextSkeleton: a row of TextSkeletons
+      always claims equal-width boxes, which doesn't fit 3 short counters */}
+  <div className="flex items-center gap-5 pt-1">
+    <SkeletonGroup direction="row" gap={20}>
+      {[0, 1, 2].map(i => <Skeleton key={i} width={40} height={14} />)}
+    </SkeletonGroup>
+  </div>
+</div>`;
 
 const CODE_NOTIFICATION_LIST = `import {
-  TextSkeleton, ListSkeleton,
+  Skeleton, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function NotificationList({ loading, notifications }) {
-  return (
-    <div className="card">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
-        {loading
-          ? <TextSkeleton lines={1} lineHeight={16} lastLineWidth={100} />
-          : <p>Notifications</p>}
-        {loading
-          ? <TextSkeleton lines={1} lineHeight={13} lastLineWidth={70} />
-          : <button>Mark all read</button>}
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="flex items-center justify-between px-4 py-3 border-b">
+    <TextSkeleton lines={1} lineHeight={16} lastLineWidth={100} />
+    <TextSkeleton lines={1} lineHeight={13} lastLineWidth={70} />
+  </div>
 
-      {/* ListSkeleton renders icon + 2-line text rows automatically */}
-      {loading
-        ? <ListSkeleton items={4} showIcon iconSize={32} lines={2} gap={12} />
-        : notifications.map(n => (
-            <div key={n.id} className="flex items-start gap-3 px-4 py-3">
-              <span>{n.icon}</span>
-              <div>
-                <p>{n.text}</p>
-                <p>{n.time}</p>
-              </div>
-            </div>
-          ))}
+  {[0, 1, 2, 3].map(i => (
+    <div key={i} className="flex items-start gap-3 px-4 py-3">
+      <Skeleton width={32} height={32} radius="full" />
+      <div className="flex-1 space-y-1.5">
+        <TextSkeleton lines={1} lineHeight={15} lastLineWidth="75%" />
+        <TextSkeleton lines={1} lineHeight={12} lastLineWidth="22%" />
+      </div>
     </div>
-  );
-}`;
+  ))}
+</div>`;
 
 const CODE_COMMENT_THREAD = `import {
-  TextSkeleton, CommentSkeleton,
+  AvatarSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function CommentThread({ loading, comments }) {
-  return (
-    <div className="card">
-      <div className="px-4 py-3 border-b">
-        {loading
-          ? <TextSkeleton lines={1} lineHeight={16} lastLineWidth={80} />
-          : <p>{comments.length} Comments</p>}
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="px-4 py-3 border-b">
+    <TextSkeleton lines={1} lineHeight={20} lastLineWidth={80} />
+  </div>
 
-      {/* CommentSkeleton renders avatar + name/timestamp + body + actions per item */}
-      {loading
-        ? <CommentSkeleton items={3} lines={2} avatarSize={34} showActions />
-        : comments.map(c => (
-            <div key={c.id} className="flex gap-3 px-4 py-4 border-b">
-              <img className="w-[34px] h-[34px] rounded-full" src={c.author.avatar} />
-              <div>
-                <div className="flex gap-2">
-                  <span>{c.author.name}</span>
-                  <span>{c.createdAt}</span>
-                </div>
-                <p>{c.body}</p>
-              </div>
-            </div>
-          ))}
+  {[0, 1, 2].map(i => (
+    <div key={i} className="flex gap-3 px-4 py-4">
+      <AvatarSkeleton size={34} />
+      <div className="flex-1 space-y-2">
+        {/* Raw Skeleton, not TextSkeleton — a row of TextSkeletons always
+            claims equal-width boxes, which doesn't fit a name next to a
+            much shorter timestamp */}
+        <SkeletonGroup direction="row" gap={12}>
+          <Skeleton width={72} height={20} />
+          <Skeleton width={64} height={14} />
+        </SkeletonGroup>
+        <TextSkeleton lines={1} lineHeight={18} gap={4} lastLineWidth="85%" />
+        <SkeletonGroup direction="row" gap={12}>
+          <Skeleton width={36} height={12} />
+          <Skeleton width={40} height={12} />
+        </SkeletonGroup>
+      </div>
     </div>
-  );
-}`;
+  ))}
+</div>`;
 
 const CODE_BLOG_ARTICLE = `import {
-  ArticleSkeleton,
+  AvatarSkeleton, ImageSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function BlogArticle({ loading, article }) {
-  // ArticleSkeleton composes hero image + author row + heading + body lines
-  if (loading) {
-    return (
-      <ArticleSkeleton
-        showHeroImage heroHeight={200}
-        showAuthor
-        bodyLines={5}
-        showHeading
-      />
-    );
-  }
+// Rendered while loading
+<div className="card">
+  <ImageSkeleton aspectRatio="16/9" radius="none" />
 
-  return (
-    <div className="card">
-      <img className="w-full aspect-video object-cover" src={article.cover} />
-      <div className="p-4 space-y-3">
-        <span className="tag">{article.category}</span>
-        <h3>{article.title}</h3>
-        <div className="flex items-center gap-2">
-          <img className="w-7 h-7 rounded-full" src={article.author.avatar} />
-          <div>
-            <p>{article.author.name}</p>
-            <p>{article.publishedAt} · {article.readTime}</p>
-          </div>
-        </div>
-        <p>{article.excerpt}</p>
-      </div>
-    </div>
-  );
-}`;
+  <div className="p-4 space-y-3">
+    {/* Category badge */}
+    <TextSkeleton lines={1} lineHeight={22} lastLineWidth={110} />
+
+    {/* Title */}
+    <TextSkeleton lines={1} lineHeight={24} gap={5} lastLineWidth="70%" />
+
+    {/* Author row */}
+    <SkeletonGroup direction="row" gap={10} align="center">
+      <AvatarSkeleton size={28} />
+      <SkeletonGroup gap={4}>
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth={90} />
+        <TextSkeleton lines={1} lineHeight={12} lastLineWidth={130} />
+      </SkeletonGroup>
+    </SkeletonGroup>
+
+    {/* Tags — raw Skeleton, not TextSkeleton, for the same equal-width-box reason */}
+    <SkeletonGroup direction="row" gap={6}>
+      {[44, 84, 56].map(w => <Skeleton key={w} width={w} height={22} radius="sm" />)}
+    </SkeletonGroup>
+
+    {/* Excerpt */}
+    <TextSkeleton lines={3} lineHeight={16} gap={5} lastLineWidth="82%" />
+  </div>
+</div>`;
 
 const CODE_VIDEO_CARD = `import {
-  ImageSkeleton, TextSkeleton, AvatarSkeleton,
-  SkeletonGroup, Skeleton,
+  AvatarSkeleton, ImageSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function VideoCard({ loading, video }) {
-  return (
-    <div className="card">
-      {/* Thumbnail + duration badge */}
-      <div className="relative">
-        {loading
-          ? <ImageSkeleton aspectRatio="16/9" radius="none" className="aspect-video !h-auto" />
-          : <img className="w-full aspect-video object-cover" src={video.thumbnail} />}
-        <div className="absolute bottom-2 right-2">
-          {loading
-            ? <Skeleton width={40} height={20} radius="sm" />
-            : <span className="badge">{video.duration}</span>}
-        </div>
-      </div>
+// Rendered while loading
+<div className="card">
+  {/* Thumbnail + duration badge */}
+  <div className="relative">
+    <ImageSkeleton aspectRatio="16/9" radius="none" />
+    <div className="absolute bottom-2 right-2">
+      <Skeleton width={40} height={20} radius="sm" />
+    </div>
+  </div>
 
-      {/* Channel avatar + title + meta */}
-      <div className="p-3 flex gap-3">
-        {loading
-          ? <AvatarSkeleton size={32} />
-          : <img className="w-8 h-8 rounded-full" src={video.channel.avatar} />}
-
-        <div style={{ flex: 1 }}>
-          {loading ? (
-            <SkeletonGroup gap={5}>
-              {/* 2-line title */}
-              <TextSkeleton lines={2} lineHeight={18} gap={4} lastLineWidth="62%" />
-              {/* channel name + views — one block with random widths */}
-              <TextSkeleton lines={2} lineHeight={13} gap={3}
-                randomizeWidths minLineWidth={38} maxLineWidth={60} />
-            </SkeletonGroup>
-          ) : (
-            <>
-              <p>{video.title}</p>
-              <p>{video.channel.name}</p>
-              <p>{video.views} · {video.uploadedAt}</p>
-            </>
-          )}
-        </div>
+  {/* Channel avatar + title + meta */}
+  <div className="p-3 flex gap-3">
+    <AvatarSkeleton size={32} />
+    <div style={{ flex: 1 }}>
+      <TextSkeleton lines={1} lineHeight={18} gap={4} lastLineWidth="62%" />
+      <div className="mt-1.5">
+        {/* channel name + views, each an independently randomized single line */}
+        <SkeletonGroup gap={3}>
+          <TextSkeleton lines={1} lineHeight={13} randomizeWidths maxLineWidth={15} />
+          <TextSkeleton lines={1} lineHeight={13} randomizeWidths maxLineWidth={20} />
+        </SkeletonGroup>
       </div>
     </div>
-  );
-}`;
+  </div>
+</div>`;
 
 const CODE_PRODUCT_CARD = `import {
-  ProductCardSkeleton,
+  ButtonSkeleton, ImageSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function ProductCard({ loading, product }) {
-  // ProductCardSkeleton handles image + name + rating row + price + CTA button
-  if (loading) {
-    return <ProductCardSkeleton imageHeight={220} showRating showButton />;
-  }
-
-  return (
-    <div className="card">
-      <div className="relative">
-        <img className="w-full" src={product.image} />
-        <div className="absolute top-2.5 left-2.5">
-          <span className="badge-orange">{product.badge}</span>
-        </div>
-      </div>
-      <div className="p-4 space-y-2">
-        <h3>{product.name}</h3>
-        <div>★ {product.rating} ({product.reviewCount})</div>
-        <div>
-          <span>{product.price}</span>
-          <span className="line-through">{product.originalPrice}</span>
-        </div>
-        <button className="btn-primary w-full">Add to Cart</button>
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="relative">
+    <ImageSkeleton aspectRatio="3/4" radius="none" />
+    <div className="absolute top-2.5 left-2.5">
+      <Skeleton width={72} height={20} radius="full" />
     </div>
-  );
-}`;
+  </div>
+
+  <div className="p-4 space-y-2">
+    <TextSkeleton lines={2} lineHeight={20} gap={4} lastLineWidth="62%" />
+    <TextSkeleton lines={1} lineHeight={16} lastLineWidth={120} />
+    <SkeletonGroup direction="row" gap={8} align="baseline">
+      <TextSkeleton lines={1} lineHeight={28} lastLineWidth={80} />
+      <TextSkeleton lines={1} lineHeight={16} lastLineWidth={55} />
+    </SkeletonGroup>
+    <ButtonSkeleton width="100%" height={40} />
+  </div>
+</div>`;
 
 const CODE_PRICING_CARD = `import {
-  PricingCardSkeleton,
+  ButtonSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function PricingCard({ loading, plan }) {
-  // PricingCardSkeleton handles plan name + badge + price + tagline + feature list + CTA
-  if (loading) {
-    return <PricingCardSkeleton features={5} showBadge showButton />;
-  }
+// Rendered while loading
+<div className="card p-6 space-y-5">
+  <div className="flex items-center justify-between">
+    <TextSkeleton lines={1} lineHeight={16} lastLineWidth="38%" />
+    <Skeleton width={80} height={22} radius="full" />
+  </div>
 
-  return (
-    <div className="card p-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <span>{plan.name}</span>
-        <span className="badge">{plan.badge}</span>
-      </div>
-      <div className="flex items-baseline gap-1">
-        <span className="text-4xl font-bold">{plan.price}</span>
-        <span>/month</span>
-      </div>
-      <p>{plan.tagline}</p>
-      <div className="space-y-2.5">
-        {plan.features.map(f => (
-          <div key={f} className="flex items-center gap-2">
-            <span>✓</span>
-            <span>{f}</span>
-          </div>
-        ))}
-      </div>
-      <button className="btn-primary w-full">{plan.cta}</button>
-    </div>
-  );
-}`;
+  <div className="flex items-baseline gap-1">
+    <TextSkeleton lines={1} lineHeight={48} lastLineWidth={80} />
+    <TextSkeleton lines={1} lineHeight={16} lastLineWidth={56} className="ml-1" />
+  </div>
+
+  <TextSkeleton lines={1} lineHeight={16} lastLineWidth="65%" />
+
+  {/* Feature list — real SkeletonGroup, not a raw div, so the percentage-width
+      label has an ambient row layout context to resolve against */}
+  <div className="space-y-2.5">
+    {[0, 1, 2, 3, 4].map(i => (
+      <SkeletonGroup key={i} direction="row" gap={10} align="center">
+        <Skeleton size={16} variant="circle" />
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth={\`\${55 + (i % 3) * 10}%\`} />
+      </SkeletonGroup>
+    ))}
+  </div>
+
+  <ButtonSkeleton width="100%" height={44} />
+</div>`;
 
 const CODE_PRODUCT_DETAIL = `import {
-  ImageSkeleton, TextSkeleton, ButtonSkeleton,
-  SkeletonGroup, Skeleton,
+  ButtonSkeleton, ImageSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function ProductDetail({ loading, product }) {
-  return (
-    <div className="card p-6">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Product image */}
-        {loading
-          ? <ImageSkeleton aspectRatio="1" radius="lg" className="aspect-square !h-auto" />
-          : <img className="w-full aspect-square rounded-xl object-cover" src={product.image} />}
+// Rendered while loading
+<div className="card p-6">
+  <div className="grid md:grid-cols-2 gap-8">
+    <ImageSkeleton aspectRatio="1" radius="lg" />
 
-        <div className="space-y-4">
-          {/* Breadcrumb + name + rating grouped in one SkeletonGroup */}
-          {loading ? (
-            <SkeletonGroup gap={8}>
-              <TextSkeleton lines={1} lineHeight={14} lastLineWidth="48%" />
-              <TextSkeleton lines={2} lineHeight={28} gap={5} lastLineWidth="82%" />
-              <TextSkeleton lines={1} lineHeight={16} lastLineWidth="48%" />
-            </SkeletonGroup>
-          ) : (
-            <>
-              <p>{product.breadcrumb}</p>
-              <h2>{product.name}</h2>
-              <div>★ {product.rating} ({product.reviewCount} reviews)</div>
-            </>
-          )}
+    <div className="space-y-4">
+      <TextSkeleton lines={1} lineHeight={14} lastLineWidth="48%" />
+      <TextSkeleton lines={2} lineHeight={28} gap={5} lastLineWidth="82%" />
+      <TextSkeleton lines={1} lineHeight={16} lastLineWidth="48%" />
 
-          {/* Price — different line heights suit explicit skeletons */}
-          {loading ? (
-            <SkeletonGroup direction="row" gap={10} align="baseline">
-              <TextSkeleton lines={1} lineHeight={36} lastLineWidth={90} />
-              <TextSkeleton lines={1} lineHeight={18} lastLineWidth={65} />
-            </SkeletonGroup>
-          ) : (
-            <div>
-              <span>{product.price}</span>
-              <span className="line-through">{product.originalPrice}</span>
-            </div>
-          )}
+      {/* Price row — sale price, strikethrough, and discount badge each need
+          their own line height, so this is three explicit TextSkeletons */}
+      <SkeletonGroup direction="row" gap={10} align="baseline">
+        <TextSkeleton lines={1} lineHeight={36} lastLineWidth={90} />
+        <TextSkeleton lines={1} lineHeight={18} lastLineWidth={65} />
+        <TextSkeleton lines={1} lineHeight={16} lastLineWidth={55} />
+      </SkeletonGroup>
 
-          {/* Size selector */}
-          <div>
-            {loading
-              ? <TextSkeleton lines={1} lineHeight={14} lastLineWidth="22%" />
-              : <p>Select size</p>}
-            <div className="flex gap-2 mt-2">
-              {loading
-                ? ['XS','S','M','L','XL'].map(s => <Skeleton key={s} width={36} height={36} radius="md" />)
-                : product.sizes.map(s => <button key={s}>{s}</button>)}
-            </div>
-          </div>
+      <TextSkeleton lines={3} lineHeight={20} gap={5} lastLineWidth="72%" />
 
-          {/* Actions */}
-          <div className="flex gap-3">
-            {loading ? (
-              <>
-                <div style={{ flex: 1 }}><ButtonSkeleton width="100%" height={44} /></div>
-                <ButtonSkeleton width={44} height={44} />
-              </>
-            ) : (
-              <>
-                <button className="flex-1">Add to Cart</button>
-                <button>♥</button>
-              </>
-            )}
-          </div>
+      {/* Size selector */}
+      <div>
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth="22%" className="mb-2" />
+        <div className="flex gap-2">
+          {['XS', 'S', 'M', 'L', 'XL'].map(s => (
+            <Skeleton key={s} width={36} height={36} radius="md" />
+          ))}
         </div>
       </div>
+
+      <div className="flex gap-3">
+        <div style={{ flex: 1 }}><ButtonSkeleton width="100%" height={44} /></div>
+        <ButtonSkeleton width={44} height={44} />
+      </div>
     </div>
-  );
-}`;
+  </div>
+</div>`;
 
 const CODE_ANALYTICS_DASHBOARD = `import {
-  StatisticCardSkeleton, TextSkeleton, ListSkeleton,
+  AvatarSkeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function AnalyticsDashboard({ loading, data }) {
-  return (
-    <div className="space-y-4">
-      {/* Stat cards — StatisticCardSkeleton per card */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {loading
-          ? Array.from({ length: 4 }, (_, i) => (
-              <div key={i} className="card p-4">
-                <StatisticCardSkeleton showIcon metricWidth="55%" />
-              </div>
-            ))
-          : data.stats.map(s => (
-              <div key={s.label} className="card p-4">
-                <p>{s.label}</p>
-                <p>{s.value}</p>
-                <p>{s.change}</p>
-              </div>
-            ))}
+// Rendered while loading
+<div className="space-y-4">
+  {/* Stat cards */}
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    {[0, 1, 2, 3].map(i => (
+      <div key={i} className="card p-4">
+        <SkeletonGroup gap={6}>
+          <TextSkeleton lines={1} lineHeight={14} lastLineWidth="65%" />
+          <TextSkeleton lines={1} lineHeight={36} lastLineWidth="55%" />
+          <TextSkeleton lines={1} lineHeight={14} lastLineWidth="42%" />
+        </SkeletonGroup>
       </div>
+    ))}
+  </div>
 
-      {/* Activity feed — ListSkeleton for the rows */}
-      <div className="card">
-        <div className="px-4 py-3 border-b">
-          {loading
-            ? <TextSkeleton lines={1} lineHeight={18} lastLineWidth={130} />
-            : <p>Recent Activity</p>}
-        </div>
-        {loading
-          ? <ListSkeleton items={4} showIcon iconSize={36} lines={2} gap={12} />
-          : data.activity.map(a => (
-              <div key={a.id} className="flex items-center gap-3 px-4 py-3">
-                <img className="w-9 h-9 rounded-full" src={a.user.avatar} />
-                <div>
-                  <p><b>{a.user.name}</b> {a.action}</p>
-                  <p>{a.time}</p>
-                </div>
-              </div>
-            ))}
-      </div>
+  {/* Activity feed */}
+  <div className="card">
+    <div className="px-4 py-3 border-b">
+      <TextSkeleton lines={1} lineHeight={18} lastLineWidth={130} />
     </div>
-  );
-}`;
+    {[0, 1, 2, 3].map(i => (
+      <div key={i} className="flex items-center gap-3 px-4 py-3">
+        <AvatarSkeleton size={36} />
+        <SkeletonGroup gap={5} style={{ flex: 1 }}>
+          <TextSkeleton lines={1} lineHeight={16} lastLineWidth="68%" />
+          <TextSkeleton lines={1} lineHeight={13} lastLineWidth="24%" />
+        </SkeletonGroup>
+      </div>
+    ))}
+  </div>
+</div>`;
 
 const CODE_DATA_TABLE = `import {
-  TableSkeleton,
+  AvatarSkeleton, Skeleton, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
 const COLUMNS = ['Name', 'Email', 'Role', 'Status', 'Joined'];
 
-function DataTable({ loading, rows }) {
-  // TableSkeleton handles header row + N data rows × N columns automatically
-  if (loading) {
-    return <TableSkeleton rows={5} columns={5} showHeader />;
-  }
-
-  return (
-    <div className="card overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr>
-            {COLUMNS.map(col => (
-              <th key={col} className="px-4 py-3 text-left">{col}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(row => (
-            <tr key={row.email}>
-              <td className="px-4 py-3">
-                <div className="flex items-center gap-2.5">
-                  <img className="w-7 h-7 rounded-full" src={row.avatar} />
-                  <span>{row.name}</span>
-                </div>
-              </td>
-              <td className="px-4 py-3">{row.email}</td>
-              <td className="px-4 py-3">{row.role}</td>
-              <td className="px-4 py-3">{row.status}</td>
-              <td className="px-4 py-3">{row.joined}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}`;
+// Rendered while loading
+<table className="w-full text-sm">
+  <thead>
+    <tr>
+      {COLUMNS.map(col => (
+        <th key={col} className="px-4 py-3 text-left">
+          <Skeleton height={13} width="70%" />
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {[0, 1, 2, 3, 4].map(ri => (
+      <tr key={ri}>
+        {COLUMNS.map((col, ci) => (
+          <td key={col} className="px-4 py-3">
+            {ci === 0 ? (
+              <div className="flex items-center gap-2.5">
+                <AvatarSkeleton size={28} />
+                <TextSkeleton lines={1} lineHeight={14} lastLineWidth={90} />
+              </div>
+            ) : (
+              <TextSkeleton lines={1} lineHeight={14} lastLineWidth={\`\${50 + (ci * 10) % 30}%\`} />
+            )}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>`;
 
 const CODE_LOGIN_FORM = `import {
-  FormSkeleton,
+  ButtonSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function LoginForm({ loading }) {
-  // FormSkeleton renders label + input field rows + submit button
-  if (loading) {
-    return (
-      <div className="card p-6">
-        <FormSkeleton fields={2} showLabels inputHeight={40} showSubmitButton />
-      </div>
-    );
-  }
+// Rendered while loading
+<div className="card p-6 space-y-5">
+  <div className="text-center">
+    <SkeletonGroup gap={6} align="center">
+      <Skeleton width={160} height={26} className="mx-auto" />
+      <Skeleton width={210} height={14} className="mx-auto" />
+    </SkeletonGroup>
+  </div>
 
-  return (
-    <div className="card p-6 space-y-5">
-      <div className="text-center">
-        <h3>Welcome back</h3>
-        <p>Sign in to your account</p>
-      </div>
-      {['Email', 'Password'].map(field => (
-        <div key={field} className="space-y-1.5">
-          <label>{field}</label>
-          <input type={field === 'Password' ? 'password' : 'email'} placeholder={field} />
-        </div>
-      ))}
-      <div className="flex justify-between">
-        <label>Remember me</label>
-        <button>Forgot password?</button>
-      </div>
-      <button className="btn-primary w-full">Sign in</button>
+  {[{ label: 'Email', w: 46 }, { label: 'Password', w: 64 }].map(field => (
+    <div key={field.label} className="space-y-1.5">
+      <Skeleton width={field.w} height={13} />
+      <Skeleton width="100%" height={40} />
     </div>
-  );
-}`;
+  ))}
+
+  <div className="flex items-center justify-between">
+    <TextSkeleton lines={1} lineHeight={14} lastLineWidth={110} />
+    <TextSkeleton lines={1} lineHeight={14} lastLineWidth={90} />
+  </div>
+
+  <ButtonSkeleton width="100%" height={44} />
+
+  <div className="text-center">
+    <Skeleton width={180} height={13} className="mx-auto" />
+  </div>
+</div>`;
 
 const CODE_CHAT = `import {
-  ChatMessageSkeleton,
+  AvatarSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function Chat({ loading, conversation }) {
-  // ChatMessageSkeleton renders alternating chat bubbles + optional input bar
-  if (loading) {
-    return <ChatMessageSkeleton messages={4} showInput />;
-  }
+const messages = [
+  { isMe: false, h: 36 },
+  { isMe: true, h: 52 },
+  { isMe: false, h: 36 },
+  { isMe: true, h: 36 },
+];
 
-  return (
-    <div className="card">
-      <div className="flex items-center gap-3 px-4 py-3 border-b">
-        <img className="w-8 h-8 rounded-full" src={conversation.participant.avatar} />
-        <div>
-          <p>{conversation.participant.name}</p>
-          <p>{conversation.participant.status}</p>
-        </div>
-      </div>
-      <div className="p-4 space-y-3">
-        {conversation.messages.map(msg => (
-          <div key={msg.id} className={msg.isMe ? 'text-right' : 'text-left'}>
-            <span className="bubble">{msg.text}</span>
-          </div>
-        ))}
-      </div>
-      <div className="px-4 pb-4 flex gap-2">
-        <input className="flex-1" placeholder="Type a message…" />
-        <button>↗</button>
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="flex items-center gap-3 px-4 py-3 border-b">
+    <AvatarSkeleton size={32} />
+    <div style={{ flex: 1 }}>
+      <SkeletonGroup gap={3}>
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth={80} />
+        <TextSkeleton lines={1} lineHeight={12} lastLineWidth={45} />
+      </SkeletonGroup>
     </div>
-  );
-}`;
+  </div>
+
+  <div className="p-4 space-y-3">
+    {messages.map((m, i) => (
+      <div key={i} className={\`flex gap-2 items-end \${m.isMe ? 'justify-end' : 'justify-start'}\`}>
+        {!m.isMe && <Skeleton variant="circle" size={24} />}
+        <Skeleton width={m.isMe ? '52%' : '60%'} height={m.h} radius="lg" />
+      </div>
+    ))}
+  </div>
+
+  <div className="px-4 pb-4 flex gap-2">
+    <div style={{ flex: 1 }}><Skeleton width="100%" height={38} radius="full" /></div>
+    <Skeleton width={38} height={38} radius="full" />
+  </div>
+</div>`;
 
 const CODE_SETTINGS_PANEL = `import {
-  TextSkeleton, Skeleton,
+  Skeleton, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function SettingsPanel({ loading, settings }) {
-  return (
-    <div className="card">
-      <div className="px-5 py-3 border-b">
-        {loading
-          ? <TextSkeleton lines={1} lineHeight={18} lastLineWidth={120} />
-          : <p>Account Settings</p>}
-      </div>
+// Rendered while loading
+<div className="card">
+  <div className="px-5 py-3 border-b">
+    <TextSkeleton lines={1} lineHeight={18} lastLineWidth={120} />
+  </div>
 
-      {loading
-        ? Array.from({ length: 4 }, (_, i) => (
-            <div key={i} className="flex items-center justify-between px-5 py-4 gap-4">
-              {/* randomizeWidths gives each row a natural label + description pair */}
-              <TextSkeleton
-                lines={2} lineHeight={14} gap={6} style={{ flex: 1 }}
-                randomizeWidths minLineWidth={52} maxLineWidth={78}
-              />
-              <Skeleton width={44} height={24} radius="full" />
-            </div>
-          ))
-        : settings.map(s => (
-            <div key={s.key} className="flex items-center justify-between px-5 py-4 gap-4">
-              <div>
-                <p>{s.label}</p>
-                <p>{s.description}</p>
-              </div>
-              <button
-                role="switch"
-                aria-checked={s.enabled}
-                className={s.enabled ? 'toggle-on' : 'toggle-off'}
-              />
-            </div>
-          ))}
+  {[0, 1, 2, 3].map(i => (
+    <div key={i} className="flex items-center justify-between px-5 py-4 gap-4">
+      <div className="flex-1 space-y-1.5">
+        <TextSkeleton lines={1} lineHeight={15} lastLineWidth="55%" />
+        <TextSkeleton lines={1} lineHeight={13} lastLineWidth="75%" />
+      </div>
+      <Skeleton width={44} height={24} radius="full" />
     </div>
-  );
-}`;
+  ))}
+</div>`;
 
 const CODE_SIDEBAR_NAV = `import {
-  SidebarSkeleton,
+  AvatarSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function SidebarNav({ loading, nav }) {
-  // SidebarSkeleton composes logo block + nav items + optional section headings + user footer
-  if (loading) {
-    return (
-      <SidebarSkeleton
-        navItems={6}
-        showLogo
-        showProfile
-        showSectionHeadings
-        sectionInterval={3}
-      />
-    );
-  }
+// Rendered while loading
+<div className="card p-4 space-y-4">
+  <div className="flex items-center gap-2.5 pb-3 border-b">
+    <Skeleton width={32} height={32} radius="sm" />
+    <TextSkeleton lines={1} lineHeight={18} lastLineWidth={80} />
+  </div>
 
-  return (
-    <div className="card p-4 space-y-4">
-      <div className="flex items-center gap-2.5 pb-3 border-b">
-        <img className="w-8 h-8 rounded-lg" src={nav.logoUrl} />
-        <span>{nav.appName}</span>
-      </div>
-      <div className="space-y-0.5">
-        {nav.items.map(item => (
-          <a key={item.href} href={item.href} className={item.active ? 'nav-item-active' : 'nav-item'}>
-            <item.Icon size={18} />
-            <span>{item.label}</span>
-          </a>
-        ))}
-      </div>
-      <div className="pt-3 border-t flex items-center gap-2.5">
-        <img className="w-8 h-8 rounded-full" src={nav.user.avatar} />
-        <div>
-          <p>{nav.user.name}</p>
-          <p>{nav.user.plan}</p>
-        </div>
-      </div>
+  {/* Nav items — real SkeletonGroup, not a raw div: TextSkeleton's
+      percentage width only resolves inside an ambient row layout context */}
+  <div className="space-y-0.5">
+    {[0, 1, 2, 3, 4, 5].map(i => (
+      <SkeletonGroup key={i} direction="row" gap={10} align="center" className="px-2 py-2 rounded-lg">
+        <Skeleton width={18} height={18} radius="sm" />
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth={\`\${45 + (i % 3) * 15}%\`} />
+      </SkeletonGroup>
+    ))}
+  </div>
+
+  <div className="pt-3 border-t flex items-center gap-2.5">
+    <AvatarSkeleton size={32} />
+    <div style={{ flex: 1 }}>
+      <SkeletonGroup gap={3}>
+        <TextSkeleton lines={1} lineHeight={13} lastLineWidth="65%" />
+        <TextSkeleton lines={1} lineHeight={11} lastLineWidth="45%" />
+      </SkeletonGroup>
     </div>
-  );
-}`;
+  </div>
+</div>`;
 
 const CODE_MUSIC_PLAYER = `import {
-  ImageSkeleton, TextSkeleton, SkeletonGroup, Skeleton,
+  ImageSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function MusicPlayer({ loading, track }) {
-  return (
-    <div className="card p-5 space-y-4">
-      {/* Album art + track info */}
-      <div className="flex items-center gap-4">
-        {loading
-          ? <ImageSkeleton
-              aspectRatio="1" width={72} radius="lg"
-              className="aspect-square !h-auto"
-              style={{ flexShrink: 0 }}
-            />
-          : <img className="w-[72px] h-[72px] rounded-xl" src={track.artwork} />}
-
-        <div style={{ flex: 1 }}>
-          {/* One TextSkeleton, 2 lines, random widths for title + artist */}
-          {loading
-            ? <TextSkeleton lines={2} lineHeight={16} gap={5}
-                randomizeWidths minLineWidth={45} maxLineWidth={75} />
-            : (
-                <>
-                  <p>{track.title}</p>
-                  <p>{track.artist} · {track.album}</p>
-                </>
-              )}
-        </div>
-
-        {loading ? <Skeleton size={20} radius="full" /> : <button>♥</button>}
-      </div>
-
-      {/* Progress bar */}
-      <div className="space-y-1">
-        {loading
-          ? <Skeleton width="100%" height={4} radius="full" />
-          : <div className="progress-bar"><div style={{ width: track.progress + '%' }} /></div>}
-        <div className="flex justify-between">
-          {loading ? (
-            <SkeletonGroup direction="row" justify="space-between" style={{ width: '100%' }}>
-              <Skeleton width={28} height={12} />
-              <Skeleton width={28} height={12} />
-            </SkeletonGroup>
-          ) : (
-            <>
-              <span>{track.currentTime}</span>
-              <span>{track.duration}</span>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-6">
-        {loading ? (
-          <SkeletonGroup direction="row" gap={24} align="center" justify="center">
-            {[22, 22, 40, 22, 22].map((size, i) => (
-              <Skeleton key={i} size={size} variant="circle" />
-            ))}
-          </SkeletonGroup>
-        ) : (
-          <>
-            <button>⇄</button>
-            <button>⏮</button>
-            <button className="play-btn">▶</button>
-            <button>⏭</button>
-            <button>↻</button>
-          </>
-        )}
-      </div>
+// Rendered while loading
+<div className="card p-5 space-y-4">
+  <div className="flex items-center gap-4">
+    <ImageSkeleton aspectRatio="1" width={72} radius="lg" style={{ flexShrink: 0 }} />
+    <div style={{ flex: 1 }}>
+      <SkeletonGroup gap={5}>
+        <TextSkeleton lines={1} lineHeight={18} lastLineWidth="72%" />
+        <TextSkeleton lines={1} lineHeight={14} lastLineWidth="50%" />
+      </SkeletonGroup>
     </div>
-  );
-}`;
+    <Skeleton width={20} height={20} radius="full" />
+  </div>
+
+  {/* Progress bar */}
+  <div className="space-y-1">
+    <Skeleton width="100%" height={4} radius="full" />
+    <div className="flex justify-between">
+      <TextSkeleton lines={1} lineHeight={12} lastLineWidth={28} />
+      <TextSkeleton lines={1} lineHeight={12} lastLineWidth={28} />
+    </div>
+  </div>
+
+  {/* Playback controls */}
+  <div className="flex items-center justify-center gap-6">
+    <SkeletonGroup direction="row" gap={24} align="center">
+      {[0, 1, 2, 3, 4].map(i => (
+        <Skeleton key={i} size={i === 2 ? 40 : 22} variant="circle" />
+      ))}
+    </SkeletonGroup>
+  </div>
+</div>`;
 
 const CODE_NAVBAR = `import {
-  NavbarSkeleton,
+  AvatarSkeleton, ButtonSkeleton, Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-const NAV_LINKS = ['Features', 'Pricing', 'Docs', 'Blog'];
+const links = ['Features', 'Pricing', 'Docs', 'Blog'];
 
-function Navbar({ loading, user }) {
-  // NavbarSkeleton renders logo + nav links + right-side actions in one component
-  if (loading) {
-    return <NavbarSkeleton showLogo navLinks={4} actions={3} />;
-  }
+// Rendered while loading
+<div className="card px-5 py-3 flex items-center gap-6">
+  <SkeletonGroup direction="row" gap={8} align="center">
+    <Skeleton width={28} height={28} radius="sm" />
+    <TextSkeleton lines={1} lineHeight={18} lastLineWidth={100} />
+  </SkeletonGroup>
 
-  return (
-    <nav className="card px-5 py-3 flex items-center gap-6">
-      <div className="flex items-center gap-2">
-        <img className="w-7 h-7 rounded-lg" src="/logo.svg" />
-        <span>AppName</span>
-      </div>
-      <div className="flex-1 hidden sm:flex items-center gap-5">
-        {NAV_LINKS.map(l => <a key={l} href="#">{l}</a>)}
-      </div>
-      <div className="flex items-center gap-2 ml-auto sm:ml-0">
-        <button>Search</button>
-        <button className="btn-primary">Get Started</button>
-        <img className="w-8 h-8 rounded-full" src={user.avatar} />
-      </div>
-    </nav>
-  );
-}`;
+  <div className="hidden sm:flex flex-1 items-center gap-5">
+    {links.map(link => (
+      <TextSkeleton key={link} lines={1} lineHeight={14} lastLineWidth={52} />
+    ))}
+  </div>
+
+  <div className="flex items-center gap-2 ml-auto sm:ml-0">
+    <Skeleton width={32} height={32} radius="full" />
+    <ButtonSkeleton width={88} height={34} />
+    <AvatarSkeleton size={32} />
+  </div>
+</div>`;
 
 const CODE_SEARCH_RESULTS = `import {
-  TextSkeleton, SkeletonGroup, Skeleton,
+  Skeleton, SkeletonGroup, TextSkeleton,
 } from '@gyojiro/autoskeleton-react';
 
-function SearchResults({ loading, query, results }) {
-  return (
-    <div className="space-y-3">
-      {/* Search bar */}
-      <div className="card flex items-center gap-3 px-4 h-12">
-        {loading ? (
-          <SkeletonGroup direction="row" gap={10} align="center" style={{ flex: 1 }}>
-            <Skeleton size={18} radius="sm" />
-            <TextSkeleton lines={1} lineHeight={16} lastLineWidth="40%" />
-          </SkeletonGroup>
-        ) : (
-          <>
-            <span>⌕</span>
-            <span>{query}</span>
-            <span>{results.length} results</span>
-          </>
-        )}
-      </div>
+// Rendered while loading
+<div className="space-y-3">
+  <div className="card flex items-center gap-3 px-4 h-12">
+    <SkeletonGroup direction="row" gap={10} align="center" style={{ flex: 1 }}>
+      <Skeleton width={18} height={18} radius="sm" />
+      <TextSkeleton lines={1} lineHeight={16} lastLineWidth="40%" />
+    </SkeletonGroup>
+  </div>
 
-      {/* Result cards — one TextSkeleton with randomizeWidths replaces 3 separate ones */}
-      {loading
-        ? Array.from({ length: 4 }, (_, i) => (
-            <div key={i} className="card p-4">
-              <TextSkeleton
-                lines={4} lineHeight={16} gap={6}
-                randomizeWidths minLineWidth={35} maxLineWidth={88}
-              />
-            </div>
-          ))
-        : results.map(r => (
-            <div key={r.url} className="card p-4">
-              <p className="url">{r.url}</p>
-              <a href={r.url}>{r.title}</a>
-              <p>{r.snippet}</p>
-            </div>
-          ))}
+  {[0, 1, 2, 3].map(i => (
+    <div key={i} className="card p-4 space-y-1.5">
+      <TextSkeleton lines={1} lineHeight={12} lastLineWidth="38%" />
+      <TextSkeleton lines={1} lineHeight={20} lastLineWidth="76%" />
+      <TextSkeleton lines={2} lineHeight={16} gap={4} lastLineWidth="92%" />
     </div>
-  );
-}`;
+  ))}
+</div>`;
 
 /* ─── Drop-in component code snippets ──────────────────────────────────────── *
  * Unlike the snippets above (which show what hand-tuned code *would* look    *
