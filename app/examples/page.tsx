@@ -1287,7 +1287,7 @@ function CommentThread({ l }: { l: boolean }) {
   return (
     <div className={CARD}>
       <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-        {l ? <TextSkeleton lines={1} lineHeight={16} lastLineWidth={80} /> : (
+        {l ? <TextSkeleton lines={1} lineHeight={20} lastLineWidth={80} /> : (
           <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">3 Comments</p>
         )}
       </div>
@@ -1303,7 +1303,7 @@ function CommentThread({ l }: { l: boolean }) {
                     here would always be equal-width boxes no matter what width
                     you ask for. A fixed px Skeleton sizes intrinsically instead. */}
                 <SkeletonGroup direction="row" gap={12}>
-                  <Skeleton width={72} height={14} />
+                  <Skeleton width={72} height={20} />
                   <Skeleton width={64} height={14} />
                 </SkeletonGroup>
                 <TextSkeleton lines={1} lineHeight={18} gap={4} lastLineWidth="85%" />
@@ -1361,7 +1361,7 @@ function BlogArticle({ l }: { l: boolean }) {
         )}
 
         {l ? (
-          <TextSkeleton lines={2} lineHeight={24} gap={5} lastLineWidth="70%" />
+          <TextSkeleton lines={1} lineHeight={24} gap={5} lastLineWidth="70%" />
         ) : (
           <h3 className="font-bold text-slate-900 dark:text-slate-100 leading-snug">
             How Skeleton Screens Make Your App Feel Instant
@@ -1387,8 +1387,13 @@ function BlogArticle({ l }: { l: boolean }) {
         )}
 
         {l ? (
+          // Raw Skeleton, not TextSkeleton — TextSkeleton's wrapper always
+          // flex-grows to an equal share of a row, so 3 tags of different
+          // requested widths would still get equal-size boxes with the bar
+          // left-aligned inside, leaving huge gaps. Fixed px Skeleton sizes
+          // intrinsically instead.
           <SkeletonGroup direction="row" gap={6}>
-            {([44, 84, 56] as const).map(w => <TextSkeleton key={w} lines={1} lineHeight={22} lastLineWidth={w} />)}
+            {([44, 84, 56] as const).map(w => <Skeleton key={w} width={w} height={22} radius="sm" />)}
           </SkeletonGroup>
         ) : (
           <div className="flex gap-1.5">
@@ -1399,7 +1404,7 @@ function BlogArticle({ l }: { l: boolean }) {
         )}
 
         {l ? (
-          <TextSkeleton lines={3} lineHeight={20} gap={5} lastLineWidth="82%" />
+          <TextSkeleton lines={3} lineHeight={16} gap={5} lastLineWidth="82%" />
         ) : (
           <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
             Perceived performance matters as much as actual performance. Skeleton screens create the illusion of speed by showing the content structure before data arrives.
@@ -1437,7 +1442,7 @@ function VideoCard({ l }: { l: boolean }) {
         )}
         <div className="flex-1 min-w-0">
           {l ? (
-            <TextSkeleton lines={2} lineHeight={18} gap={4} lastLineWidth="62%" />
+            <TextSkeleton lines={1} lineHeight={18} gap={4} lastLineWidth="62%" />
           ) : (
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug">
               Building a Design System from Scratch
@@ -1446,8 +1451,8 @@ function VideoCard({ l }: { l: boolean }) {
           <div className="mt-1.5">
             {l ? (
               <SkeletonGroup gap={3}>
-                <TextSkeleton lines={1} lineHeight={13} lastLineWidth="55%" />
-                <TextSkeleton lines={1} lineHeight={13} lastLineWidth="40%" />
+                <TextSkeleton lines={1} lineHeight={13} randomizeWidths maxLineWidth={15} />
+                <TextSkeleton lines={1} lineHeight={13} randomizeWidths maxLineWidth={20} />
               </SkeletonGroup>
             ) : (
               <>
