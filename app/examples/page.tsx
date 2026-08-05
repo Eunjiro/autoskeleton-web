@@ -1300,7 +1300,10 @@ function CommentThread({ l }: { l: boolean }) {
                   <TextSkeleton lines={1} lineHeight={14} lastLineWidth={60} />
                 </SkeletonGroup>
                 <TextSkeleton lines={2} lineHeight={18} gap={4} lastLineWidth="85%" />
-                <TextSkeleton lines={1} lineHeight={12} lastLineWidth={80} />
+                <SkeletonGroup direction="row" gap={12}>
+                  <Skeleton width={36} height={12} />
+                  <Skeleton width={40} height={12} />
+                </SkeletonGroup>
               </div>
             </div>
           ))
@@ -2226,10 +2229,9 @@ function ContentCardExample({ l }: { l: boolean }) {
           <div className="w-full h-40 rounded-lg bg-gradient-to-br from-sky-100 to-indigo-100 dark:from-sky-900/30 dark:to-indigo-900/30 flex items-center justify-center text-slate-400 text-sm">Cover image</div>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-semibold text-xs">TL</div>
-            <div>
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Tom Lin</p>
-              <p className="text-xs text-slate-400">Senior Engineer</p>
-            </div>
+            {/* CardSkeleton's avatar row is one TextSkeleton line, not two —
+                match it here instead of splitting name/role onto separate lines. */}
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Tom Lin · Senior Engineer</p>
           </div>
           <p className="text-sm text-slate-600 dark:text-slate-300">How we cut CI build times by 60% with incremental caching.</p>
           <button className="h-9 px-4 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium">Read more</button>
@@ -2243,7 +2245,7 @@ function ArticlePageExample({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-6`}>
       {l ? (
-        <ArticleSkeleton heroHeight={180} bodyLines={4} />
+        <ArticleSkeleton heroHeight={180} bodyLines={4} showHeading={false} />
       ) : (
         <div className="space-y-4">
           <div className="w-full h-[180px] rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center text-slate-400 text-sm">Hero image</div>
@@ -2299,9 +2301,11 @@ function ProductGridExample({ l }: { l: boolean }) {
         : products.map((p) => (
             <div key={p.name} className={CARD}>
               <div className={`w-full h-[110px] bg-gradient-to-br ${p.color} flex items-center justify-center text-slate-400 text-xs`}>Photo</div>
-              <div className="p-3 space-y-1">
+              <div className="p-3 space-y-1.5">
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{p.name}</p>
                 <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{p.price}</p>
+                {/* ProductCardSkeleton's showButton defaults true — match it. */}
+                <button className="w-full h-7 mt-1.5 rounded-md bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-medium">Add to cart</button>
               </div>
             </div>
           ))}
@@ -2311,9 +2315,9 @@ function ProductGridExample({ l }: { l: boolean }) {
 
 function PricingTiersExample({ l }: { l: boolean }) {
   const tiers = [
-    { name: 'Starter', price: '$0', badge: false },
-    { name: 'Pro', price: '$29', badge: true },
-    { name: 'Team', price: '$79', badge: false },
+    { name: 'Starter', price: '$0', badge: false, features: ['1 project', 'Community support', '1 GB storage'] },
+    { name: 'Pro', price: '$29', badge: true, features: ['Unlimited projects', 'Priority support', '50 GB storage'] },
+    { name: 'Team', price: '$79', badge: false, features: ['Everything in Pro', 'Team roles', '500 GB storage'] },
   ];
   return (
     <div className="grid grid-cols-3 gap-3">
@@ -2323,7 +2327,19 @@ function PricingTiersExample({ l }: { l: boolean }) {
             <div key={t.name} className={`${CARD} p-4 space-y-3 text-center ${t.badge ? 'ring-2 ring-indigo-500' : ''}`}>
               {t.badge && <span className="text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">Popular</span>}
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t.name}</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.price}</p>
+              <div>
+                <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.price}</span>
+                <span className="text-xs text-slate-400">/mo</span>
+              </div>
+              {/* PricingCardSkeleton always renders its feature list — match it. */}
+              <div className="space-y-1.5 text-left">
+                {t.features.map((f) => (
+                  <div key={f} className="flex items-center gap-1.5">
+                    <span className="w-3.5 h-3.5 flex-shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 text-[8px] flex items-center justify-center">✓</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">{f}</span>
+                  </div>
+                ))}
+              </div>
               <button className="w-full h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition">Choose</button>
             </div>
           ))}
@@ -2333,10 +2349,10 @@ function PricingTiersExample({ l }: { l: boolean }) {
 
 function AdminDashboardExample({ l }: { l: boolean }) {
   const stats = [
-    { label: 'Revenue', value: '$48.2K' },
-    { label: 'Users', value: '2,840' },
-    { label: 'Orders', value: '412' },
-    { label: 'Refunds', value: '1.2%' },
+    { label: 'Revenue', value: '$48.2K', trend: '+12.4%', up: true },
+    { label: 'Users', value: '2,840', trend: '+8.1%', up: true },
+    { label: 'Orders', value: '412', trend: '+3.2%', up: true },
+    { label: 'Refunds', value: '1.2%', trend: '-0.4%', up: false },
   ];
   return (
     <div className={`${CARD} p-5 space-y-5`}>
@@ -2349,13 +2365,19 @@ function AdminDashboardExample({ l }: { l: boolean }) {
               <div key={s.label} className="rounded-lg border border-slate-200 dark:border-slate-800 p-3">
                 <p className="text-xs text-slate-400">{s.label}</p>
                 <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-0.5">{s.value}</p>
+                {/* StatisticCardSkeleton always renders a third trend line — match it. */}
+                <p className={`text-xs mt-0.5 ${s.up ? 'text-emerald-500' : 'text-red-500'}`}>{s.trend}</p>
               </div>
             ))}
           </div>
-          <div className="h-40 rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-end gap-2 p-4">
-            {[45, 70, 55, 85, 60, 40, 75].map((h, i) => (
-              <div key={i} className="flex-1 bg-indigo-400 dark:bg-indigo-500 rounded-t" style={{ height: `${h}%` }} />
-            ))}
+          <div>
+            {/* DashboardSkeleton's chart section starts with a title bar — match it. */}
+            <p className="text-xs text-slate-400 mb-2">Revenue over time</p>
+            <div className="h-40 rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-end gap-2 p-4">
+              {[45, 70, 55, 85, 60, 40, 75].map((h, i) => (
+                <div key={i} className="flex-1 bg-indigo-400 dark:bg-indigo-500 rounded-t" style={{ height: `${h}%` }} />
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -2398,16 +2420,24 @@ function TeamChatExample({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-4`}>
       {l ? (
-        <ChatMessageSkeleton messages={5} />
+        <ChatMessageSkeleton messages={3} />
       ) : (
         <div className="space-y-2.5">
           {messages.map((m, i) => (
-            <div key={i} className={`flex ${m.fromMe ? 'justify-end' : 'justify-start'}`}>
+            <div key={i} className={`flex items-end gap-2 ${m.fromMe ? 'justify-end' : 'justify-start'}`}>
+              {/* ChatMessageSkeleton puts an avatar beside received messages — match it. */}
+              {!m.fromMe && <div className="w-6 h-6 flex-shrink-0 rounded-full bg-sky-100 dark:bg-sky-900/40" />}
               <div className={`max-w-[75%] px-3.5 py-2 rounded-2xl text-sm ${m.fromMe ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'}`}>
                 {m.text}
               </div>
+              {m.fromMe && <div className="w-6 h-6 flex-shrink-0 rounded-full bg-indigo-200 dark:bg-indigo-800" />}
             </div>
           ))}
+          {/* ChatMessageSkeleton's showInput defaults true — match it. */}
+          <div className="flex items-center gap-2 pt-1">
+            <div className="flex-1 h-9 px-3 rounded-full border border-slate-200 dark:border-slate-700 flex items-center text-sm text-slate-400">Message #general</div>
+            <div className="w-9 h-9 flex-shrink-0 rounded-full bg-indigo-600" />
+          </div>
         </div>
       )}
     </div>
@@ -2416,21 +2446,28 @@ function TeamChatExample({ l }: { l: boolean }) {
 
 function CommentsExample({ l }: { l: boolean }) {
   const comments = [
-    { init: 'RP', name: 'Ryan Park', text: 'This solved my exact problem, thank you!' },
-    { init: 'AL', name: 'Amara Lee', text: 'Would love to see a dark mode example too.' },
+    { init: 'RP', name: 'Ryan Park', time: '2h ago', text: 'This solved my exact problem, thank you!' },
+    { init: 'AL', name: 'Amara Lee', time: '5h ago', text: 'Would love to see a dark mode example too.' },
   ];
   return (
     <div className={`${CARD} p-5`}>
       {l ? (
-        <CommentSkeleton items={3} showActions />
+        <CommentSkeleton items={2} showActions />
       ) : (
         <div className="space-y-4">
           {comments.map((c) => (
             <div key={c.name} className="flex gap-3">
               <div className="w-9 h-9 flex-shrink-0 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-700 dark:text-violet-300 font-semibold text-xs">{c.init}</div>
               <div>
-                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{c.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{c.name}</p>
+                  <p className="text-xs text-slate-400">{c.time}</p>
+                </div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">{c.text}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <button className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Like</button>
+                  <button className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Reply</button>
+                </div>
               </div>
             </div>
           ))}
@@ -2449,7 +2486,7 @@ function ActivityTimelineExample({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-5`}>
       {l ? (
-        <TimelineSkeleton events={4} lines={1} />
+        <TimelineSkeleton events={3} lines={0} />
       ) : (
         <div className="space-y-0">
           {events.map((e, i) => (
@@ -2458,9 +2495,9 @@ function ActivityTimelineExample({ l }: { l: boolean }) {
                 <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
                 {i < events.length - 1 && <span className="w-px flex-1 bg-slate-200 dark:bg-slate-700 mt-1" />}
               </div>
-              <div>
+              <div className="flex items-center justify-between gap-2 flex-1">
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{e.title}</p>
-                <p className="text-xs text-slate-400">{e.time}</p>
+                <p className="text-xs text-slate-400 flex-shrink-0">{e.time}</p>
               </div>
             </div>
           ))}
@@ -2475,7 +2512,7 @@ function FeedListExample({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-2`}>
       {l ? (
-        <ListSkeleton items={5} showTrailing />
+        <ListSkeleton items={4} showTrailing />
       ) : (
         <div>
           {items.map((label, i) => (
@@ -2523,11 +2560,14 @@ function AppShellExample({ l }: { l: boolean }) {
     <div className={`${CARD} flex overflow-hidden`} style={{ height: 260 }}>
       <div className="w-44 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 p-3">
         {l ? (
-          <SidebarSkeleton navItems={4} showProfile={false} />
+          <SidebarSkeleton navItems={4} showProfile={false} showLogo={false} />
         ) : (
           <div className="space-y-1">
             {navItems.map((n, i) => (
-              <div key={n} className={`px-2.5 py-1.5 rounded-lg text-sm ${i === 0 ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>{n}</div>
+              <div key={n} className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-sm ${i === 0 ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>
+                <span className={`w-3.5 h-3.5 rounded-sm flex-shrink-0 ${i === 0 ? 'bg-indigo-200 dark:bg-indigo-800' : 'bg-slate-200 dark:bg-slate-700'}`} />
+                {n}
+              </div>
             ))}
           </div>
         )}
@@ -2537,10 +2577,13 @@ function AppShellExample({ l }: { l: boolean }) {
           <NavbarSkeleton navLinks={0} actions={2} />
         ) : (
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-            <p className="font-semibold text-slate-800 dark:text-slate-200">Overview</p>
-            <div className="flex gap-2">
-              <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800" />
-              <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800" />
+            <div className="flex items-center gap-2">
+              <span className="w-8 h-8 rounded-md bg-indigo-100 dark:bg-indigo-900/40 flex-shrink-0" />
+              <p className="font-semibold text-slate-800 dark:text-slate-200">Overview</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-9 px-3 rounded-full bg-indigo-600 text-white text-xs font-medium flex items-center">New</span>
+              <span className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex-shrink-0" />
             </div>
           </div>
         )}
@@ -2555,7 +2598,7 @@ function StoriesRowExample({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-4`}>
       {l ? (
-        <StoriesBarSkeleton items={8} avatarSize={56} />
+        <StoriesBarSkeleton items={6} avatarSize={56} />
       ) : (
         <div className="flex gap-4 overflow-x-auto">
           {people.map((name, i) => (
@@ -2584,12 +2627,13 @@ function DarkModeExample({ l }: { l: boolean }) {
           <div className="w-full h-[130px] rounded-lg bg-slate-700 flex items-center justify-center text-slate-400 text-sm">Cover image</div>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-indigo-500/30 flex items-center justify-center text-indigo-300 font-semibold text-xs">NK</div>
-            <div>
-              <p className="text-sm font-medium text-slate-100">Nadia Khoury</p>
-              <p className="text-xs text-slate-400">Platform Team</p>
-            </div>
+            <p className="text-sm font-medium text-slate-100">Nadia Khoury · Platform Team</p>
           </div>
-          <p className="text-sm text-slate-300">One prop switches every skeleton in the subtree to dark colors.</p>
+          <div className="space-y-1.5">
+            <p className="text-sm text-slate-300">One prop switches every skeleton in the subtree to dark colors.</p>
+            <p className="text-sm text-slate-300">No per-component theme wiring needed.</p>
+          </div>
+          <button className="h-9 px-4 rounded-full bg-indigo-500 text-white text-sm font-medium">Learn more</button>
         </div>
       )}
     </div>

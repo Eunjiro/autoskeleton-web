@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Header from "@/components/Header";
 import {
-  
+  Skeleton,
   SkeletonGroup,
   AvatarSkeleton,
   TextSkeleton,
@@ -128,6 +128,7 @@ const TOC = [
   { id: "real-world-pattern", label: "Real-World Pattern" },
   { id: "theming", label: "Theming" },
   { id: "dark-theme", label: "Dark Theme" },
+  { id: "layout", label: "Layout: Flex & Grid" },
   { id: "skeleton-group-overrides", label: "Local Overrides" },
   { id: "accessibility", label: "Accessibility" },
   { id: "api-reference", label: "API Reference" },
@@ -496,6 +497,79 @@ const { isDark } = useTheme();
                 </SubSection>
               </Section>
 
+              {/* ── LAYOUT ───────────────────────────────────────────────── */}
+              <Section id="layout" title="Layout: Flex & Grid">
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <Code>SkeletonGroup</Code> arranges children with flexbox by default. A row next to a
+                  fixed-size element (like an avatar) fills the remaining space automatically —
+                  no manual <Code>flex: 1</Code> needed.
+                </p>
+
+                <CodeBlock
+                  code={`import { SkeletonGroup, AvatarSkeleton, TextSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup direction="row" gap={12} align="center">
+  <AvatarSkeleton size={48} />
+  <TextSkeleton lines={2} />
+</SkeletonGroup>`}
+                />
+
+                <SubSection title="Live preview">
+                  <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                    <SkeletonGroup direction="row" gap={12} align="center">
+                      <AvatarSkeleton size={48} />
+                      <TextSkeleton lines={2} />
+                    </SkeletonGroup>
+                  </div>
+                </SubSection>
+
+                <SubSection title="Grid">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    Set <Code>layout=&quot;grid&quot;</Code> for CSS grid instead of flexbox.{" "}
+                    <Code>columns</Code> renders <Code>repeat(columns, 1fr)</Code> — that many
+                    equal-width tracks — or pass a raw <Code>grid-template-columns</Code> string
+                    for full control.
+                  </p>
+                  <CodeBlock
+                    code={`<SkeletonGroup layout="grid" columns={3} gap={16}>
+  <Skeleton height={80} radius="md" />
+  <Skeleton height={80} radius="md" />
+  <Skeleton height={80} radius="md" />
+</SkeletonGroup>`}
+                  />
+                  <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                    <SkeletonGroup layout="grid" columns={3} gap={16}>
+                      <Skeleton height={80} radius="md" />
+                      <Skeleton height={80} radius="md" />
+                      <Skeleton height={80} radius="md" />
+                    </SkeletonGroup>
+                  </div>
+                </SubSection>
+
+                <SubSection title="Responsive columns & direction">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    <Code>columns</Code> and <Code>direction</Code> both accept a{" "}
+                    <Code>{"{ base, sm, md, lg, xl }"}</Code> object instead of a constant value,
+                    resolved via a CSS container query scoped to the group&apos;s own rendered
+                    width — <strong>not the viewport</strong>. A grid nested inside a narrow
+                    sidebar or modal responds to that container&apos;s width correctly, the same
+                    way it would at the edge of the browser window.
+                  </p>
+                  <CodeBlock
+                    code={`// 1 column by default, 2 from a 480px container width, 3 from 640px
+<SkeletonGroup layout="grid" columns={{ base: 1, sm: 2, md: 3 }} gap={16}>
+  {items.map((item) => <ProductCardSkeleton key={item.id} />)}
+</SkeletonGroup>`}
+                  />
+                  <Callout type="info">
+                    Breakpoints are container-width, in pixels: <Code>sm</Code> = 480,{" "}
+                    <Code>md</Code> = 640, <Code>lg</Code> = 800, <Code>xl</Code> = 1024. Resize
+                    this browser window to see the grid above respond — it&apos;s reacting to its
+                    own container, not the page.
+                  </Callout>
+                </SubSection>
+              </Section>
+
               {/* ── LOCAL OVERRIDES ─────────────────────────────────────── */}
               <Section id="skeleton-group-overrides" title="Local Overrides with SkeletonGroup">
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -657,6 +731,7 @@ const { isDark } = useTheme();
                           ["ImageSkeleton", "Component", "Aspect-ratio-aware image placeholder"],
                           ["ArticleSkeleton", "Component", "Hero + author + body layout"],
                           ["CardSkeleton", "Component", "Versatile card (column or row)"],
+                          ["ChartSkeleton", "Component", "Bar, line, or donut chart placeholder"],
                           ["ChatMessageSkeleton", "Component", "Chat bubbles + input area"],
                           ["CommentSkeleton", "Component", "Stacked comment thread"],
                           ["DashboardSkeleton", "Component", "Stats + chart + table layout"],
@@ -670,10 +745,13 @@ const { isDark } = useTheme();
                           ["ProfileSkeleton", "Component", "Social profile layout"],
                           ["SidebarSkeleton", "Component", "App sidebar navigation"],
                           ["StatisticCardSkeleton", "Component", "KPI / stat card"],
+                          ["StoriesBarSkeleton", "Component", "Horizontally-scrolling avatar row"],
                           ["TableSkeleton", "Component", "Tabular data placeholder"],
                           ["TimelineSkeleton", "Component", "Vertical timeline"],
                           ["DARK_THEME", "Constant", "{ color: '#374151', highlight: '#4B5563' }"],
                           ["useSkeleton", "Hook", "Returns the current SkeletonTheme from context"],
+                          ["ResponsiveValue<T>", "Type", "T | { base, sm, md, lg, xl } — for SkeletonGroup's columns/direction"],
+                          ["SkeletonBreakpoint", "Type", "\"sm\" | \"md\" | \"lg\" | \"xl\""],
                         ].map(([name, kind, desc], i) => (
                           <tr
                             key={name}
