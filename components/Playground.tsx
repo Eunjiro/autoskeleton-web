@@ -1,6 +1,83 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
+import { ArrowRight, SlidersHorizontal, X } from "lucide-react";
+
+/* ─── Modal ──────────────────────────────────────────────────────────────── */
+
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true" aria-label={title}>
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-5xl max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm">
+          <div className="flex items-center gap-2.5">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">{title}</h3>
+            <span className="text-[10px] font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 px-1.5 py-0.5 rounded">
+              Interactive
+            </span>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close playground"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="p-6">{children}</div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+function PlaygroundLauncher({ label, onOpen }: { label: string; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      className="group flex items-center gap-4 w-full text-left p-5 rounded-xl border border-dashed border-violet-300 dark:border-violet-700/50 bg-violet-50/50 dark:bg-violet-950/20 hover:bg-violet-50 dark:hover:bg-violet-950/30 hover:border-violet-400 dark:hover:border-violet-600 transition-colors"
+    >
+      <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 flex items-center justify-center flex-shrink-0">
+        <SlidersHorizontal size={18} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{label}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          Toggle props, drag sliders, watch it update live — and copy the exact code.
+        </p>
+      </div>
+      <ArrowRight size={16} className="text-violet-500 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+    </button>
+  );
+}
 
 /* ─── Reusable controls ──────────────────────────────────────────────────── */
 
@@ -97,7 +174,7 @@ function CodeOutput({ code }: { code: string }) {
 
 /* ─── ArticleSkeleton playground ────────────────────────────────────────── */
 
-export function ArticleSkeletonPlayground() {
+function ArticleSkeletonPlaygroundContent() {
   const [showHeroImage, setShowHeroImage] = useState(true);
   const [heroHeight, setHeroHeight] = useState(240);
   const [showAuthor, setShowAuthor] = useState(true);
@@ -117,7 +194,7 @@ export function ArticleSkeletonPlayground() {
     .join("\n");
 
   return (
-    <div className="grid lg:grid-cols-[240px_1fr] gap-5">
+    <div className="grid lg:grid-cols-[260px_1fr] gap-6">
       <ControlPanel>
         <Toggle label="Hero image" checked={showHeroImage} onChange={setShowHeroImage} />
         <SliderControl
@@ -136,8 +213,8 @@ export function ArticleSkeletonPlayground() {
         <SliderControl label="Body lines" value={bodyLines} min={1} max={10} onChange={setBodyLines} />
       </ControlPanel>
 
-      <div className="space-y-3 min-w-0">
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+      <div className="space-y-4 min-w-0">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
           <ArticleSkeleton
             showHeroImage={showHeroImage}
             heroHeight={heroHeight}
@@ -149,5 +226,17 @@ export function ArticleSkeletonPlayground() {
         <CodeOutput code={code} />
       </div>
     </div>
+  );
+}
+
+export function ArticleSkeletonPlayground() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <PlaygroundLauncher label="Open the interactive playground" onOpen={() => setOpen(true)} />
+      <Modal open={open} onClose={() => setOpen(false)} title="ArticleSkeleton Playground">
+        <ArticleSkeletonPlaygroundContent />
+      </Modal>
+    </>
   );
 }
