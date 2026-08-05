@@ -28,6 +28,7 @@ import {
   TimelineSkeletonDemo,
   ThemeCustomizationDemo,
 } from "@/components/SkeletonDemos";
+import { ArticleSkeletonPlayground } from "@/components/Playground";
 import Header from "@/components/Header";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -47,6 +48,8 @@ interface ComponentEntry {
   props: PropRow[];
   code: string;
   Demo: React.ComponentType;
+  /** Optional interactive prop playground, shown above the static Demo presets. */
+  Playground?: React.ComponentType;
 }
 
 // ─── Shared base-props (shown inline where extended) ─────────────────────────
@@ -320,6 +323,7 @@ const COMPONENTS: ComponentEntry[] = [
 // Shorter hero
 <ArticleSkeleton heroHeight={160} bodyLines={4} />`,
     Demo: ArticleSkeletonDemo,
+    Playground: ArticleSkeletonPlayground,
   },
   {
     id: "card-skeleton",
@@ -923,7 +927,7 @@ export default function ComponentsPage() {
   }, [selectedId]);
 
   const component = COMPONENTS.find((c) => c.id === selectedId) ?? COMPONENTS[0];
-  const { Demo } = component;
+  const { Demo, Playground } = component;
 
   return (
     <>
@@ -989,10 +993,25 @@ export default function ComponentsPage() {
                 <p className="mt-1 text-slate-500 dark:text-slate-400">{component.tagline}</p>
               </div>
 
+              {/* Interactive playground */}
+              {Playground && (
+                <section>
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                      Playground
+                    </h3>
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 px-1.5 py-0.5 rounded">
+                      Interactive
+                    </span>
+                  </div>
+                  <Playground />
+                </section>
+              )}
+
               {/* Live preview */}
               <section>
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
-                  Live Preview
+                  {Playground ? "Common Presets" : "Live Preview"}
                 </h3>
                 <Demo />
               </section>
