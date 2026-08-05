@@ -1255,7 +1255,7 @@ function NotificationList({ l }: { l: boolean }) {
         {l ? (
           notes.map((_, i) => (
             <div key={i} className="flex items-start gap-3 px-4 py-3">
-              <Skeleton size={32} radius="full" />
+              <Skeleton width={32} height={32} radius="full" />
               <div className="flex-1 space-y-1.5">
                 <TextSkeleton lines={1} lineHeight={15} lastLineWidth="75%" />
                 <TextSkeleton lines={1} lineHeight={12} lastLineWidth="22%" />
@@ -1566,10 +1566,13 @@ function PricingCard({ l }: { l: boolean }) {
       <div className="space-y-2.5">
         {l ? (
           features.map((_, i) => (
-            <div key={i} className="flex items-center gap-2.5">
+            // Real SkeletonGroup, not a raw div — see SidebarNav's fix above
+            // for why a plain flex div lets the percentage-width label
+            // collapse to 0 and vanish.
+            <SkeletonGroup key={i} direction="row" gap={10} align="center">
               <Skeleton size={16} variant="circle" />
               <TextSkeleton lines={1} lineHeight={14} lastLineWidth={`${55 + (i % 3) * 10}%`} />
-            </div>
+            </SkeletonGroup>
           ))
         ) : (
           features.map(f => (
@@ -1925,7 +1928,7 @@ function Chat({ l }: { l: boolean }) {
         {l ? (
           <>
             <div className="flex-1"><Skeleton width="100%" height={38} radius="full" /></div>
-            <Skeleton size={38} radius="full" />
+            <Skeleton width={38} height={38} radius="full" />
           </>
         ) : (
           <>
@@ -1999,7 +2002,7 @@ function SidebarNav({ l }: { l: boolean }) {
   return (
     <div className={`${CARD} p-4 space-y-4`}>
       <div className="flex items-center gap-2.5 px-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-        {l ? <Skeleton size={32} radius="sm" /> : (
+        {l ? <Skeleton width={32} height={32} radius="sm" /> : (
           <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-bold">A</div>
         )}
         {l ? <TextSkeleton lines={1} lineHeight={18} lastLineWidth={80} /> : (
@@ -2009,10 +2012,14 @@ function SidebarNav({ l }: { l: boolean }) {
       <div className="space-y-0.5">
         {l ? (
           items.map((_, i) => (
-            <div key={i} className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-              <Skeleton size={18} radius="sm" />
+            // Real SkeletonGroup, not a raw div — TextSkeleton's percentage
+            // width only resolves inside an ambient "row" layout context
+            // (set via SkeletonLayoutContext); a plain flex div doesn't
+            // provide that, so the label collapsed to 0 width and vanished.
+            <SkeletonGroup key={i} direction="row" gap={10} align="center" className="px-2 py-2 rounded-lg">
+              <Skeleton width={18} height={18} radius="sm" />
               <TextSkeleton lines={1} lineHeight={14} lastLineWidth={`${45 + (i % 3) * 15}%`} />
-            </div>
+            </SkeletonGroup>
           ))
         ) : (
           items.map(item => (
@@ -2067,7 +2074,7 @@ function MusicPlayer({ l }: { l: boolean }) {
             </>
           )}
         </div>
-        {l ? <Skeleton size={20} radius="full" /> : (
+        {l ? <Skeleton width={20} height={20} radius="full" /> : (
           <button className="text-slate-300 hover:text-rose-500 transition text-xl leading-none">♥</button>
         )}
       </div>
@@ -2118,7 +2125,7 @@ function Navbar({ l }: { l: boolean }) {
     <div className={`${CARD} px-5 py-3 flex items-center gap-6`}>
       {l ? (
         <SkeletonGroup direction="row" gap={8} align="center">
-          <Skeleton size={28} radius="sm" />
+          <Skeleton width={28} height={28} radius="sm" />
           <TextSkeleton lines={1} lineHeight={18} lastLineWidth={100} />
         </SkeletonGroup>
       ) : (
@@ -2139,7 +2146,7 @@ function Navbar({ l }: { l: boolean }) {
       <div className="flex items-center gap-2 flex-shrink-0 ml-auto sm:ml-0">
         {l ? (
           <>
-            <Skeleton size={32} radius="full" />
+            <Skeleton width={32} height={32} radius="full" />
             <ButtonSkeleton width={88} height={34} />
             <AvatarSkeleton size={32} />
           </>
@@ -2167,7 +2174,7 @@ function SearchResults({ l }: { l: boolean }) {
       <div className={`${CARD} flex items-center gap-3 px-4 h-12`}>
         {l ? (
           <SkeletonGroup direction="row" gap={10} align="center" style={{ flex: 1 }}>
-            <Skeleton size={18} radius="sm" />
+            <Skeleton width={18} height={18} radius="sm" />
             <TextSkeleton lines={1} lineHeight={16} lastLineWidth="40%" />
           </SkeletonGroup>
         ) : (

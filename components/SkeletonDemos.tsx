@@ -289,7 +289,7 @@ export function ChatMessageSkeletonDemo() {
         {/* Input */}
         <div className="flex gap-2 items-center pt-2 border-t border-slate-200 dark:border-slate-800">
           <Skeleton height={40} radius="full" style={{ flex: 1 }} />
-          <Skeleton size={40} radius="full" />
+          <Skeleton width={40} height={40} radius="full" />
         </div>
       </div>
     </Preview>
@@ -325,7 +325,7 @@ export function DashboardSkeletonDemo() {
           <div key={i} className="border border-slate-200 dark:border-slate-800 rounded-lg p-3 space-y-2">
             <SkeletonGroup direction="row" justify="space-between" align="flex-start" gap={4}>
               <Skeleton width="55%" height={12} />
-              <Skeleton size={28} radius="sm" />
+              <Skeleton width={28} height={28} radius="sm" />
             </SkeletonGroup>
             <Skeleton width="50%" height={28} />
             <Skeleton width="40%" height={10} />
@@ -412,7 +412,7 @@ export function ListSkeletonDemo() {
                 <Skeleton width="68%" height={14} />
                 <Skeleton width="45%" height={12} />
               </div>
-              <Skeleton size={18} radius="sm" />
+              <Skeleton width={18} height={18} radius="sm" />
             </div>
           ))}
         </div>
@@ -556,14 +556,14 @@ export function SidebarSkeletonDemo() {
       <div className="space-y-4">
         {/* Logo */}
         <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <Skeleton size={32} radius="sm" />
+          <Skeleton width={32} height={32} radius="sm" />
           <Skeleton width={80} height={18} />
         </div>
         {/* Nav items */}
         <div className="space-y-1">
           {([0, 1, 2, 3, 4, 5] as const).map((i) => (
             <div key={i} className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-              <Skeleton size={18} radius="sm" />
+              <Skeleton width={18} height={18} radius="sm" />
               <Skeleton width={`${50 + (i % 3) * 12}%`} height={13} />
             </div>
           ))}

@@ -54,7 +54,7 @@ interface ComponentEntry {
 const skeletonBaseProps: PropRow[] = [
   { name: "width", type: "number | string", defaultValue: '"100%"', description: "Width of the skeleton." },
   { name: "height", type: "number | string", defaultValue: "16", description: "Height of the skeleton." },
-  { name: "size", type: "number | string", defaultValue: "—", description: "Shorthand — sets both width and height." },
+  { name: "size", type: "number | string", defaultValue: "—", description: 'Diameter when variant="circle". Ignored for every other variant — use width/height there.' },
   { name: "radius", type: "SkeletonRadius", defaultValue: "theme.radius", description: '"none" | "sm" | "md" | "lg" | "full" | string' },
   { name: "animation", type: "SkeletonAnimation", defaultValue: "theme.animation", description: '"wave" | "pulse" | "fade" | "none"' },
   { name: "variant", type: "SkeletonVariant", defaultValue: '"default"', description: '"default" | "rounded" | "circle"' },
