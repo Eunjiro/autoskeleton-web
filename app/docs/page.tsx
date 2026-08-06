@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import {
   Skeleton,
@@ -138,6 +138,46 @@ const TOC = [
 
 export default function DocsPage() {
   const [activeId, setActiveId] = useState("installation");
+
+  // Scroll-spy: setActiveId was previously only ever called from the TOC
+  // link's own onClick, so scrolling manually (or landing on a #hash link)
+  // never updated it -- the highlighted item just froze at whatever you
+  // last clicked. Track which section is actually near the top of the
+  // viewport instead.
+  useEffect(() => {
+    const sections = TOC.map((item) => document.getElementById(item.id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (sections.length === 0) return;
+
+    // Persisted across callbacks (not derived fresh each time) because a
+    // batch of entries only reports what changed since the last callback,
+    // not every currently-observed section.
+    const intersecting = new Set<string>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) intersecting.add(entry.target.id);
+          else intersecting.delete(entry.target.id);
+        }
+        // Among sections currently in the band, the one furthest down the
+        // page (last in TOC order) reflects how far you've actually
+        // scrolled -- picking any other one sticks on an earlier section
+        // for as long as it's still partially in the band too.
+        const current = TOC.map((item) => item.id).filter((id) => intersecting.has(id)).pop();
+        if (current) setActiveId(current);
+      },
+      // Collapse the observed viewport to a thin band just below the sticky
+      // header, matching Section's scroll-mt-20 offset -- a section counts
+      // as "current" once it crosses that band, not merely once it's
+      // anywhere on screen.
+      { rootMargin: "-80px 0px -70% 0px", threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
