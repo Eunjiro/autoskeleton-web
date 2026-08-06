@@ -386,7 +386,28 @@ const COMPONENTS: ComponentEntry[] = [
     Demo: ThemeCustomizationDemo,
     presets: [
       {
-        label: "SkeletonProvider — pulse animation",
+        label: "Wave animation (default)",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonProvider animation="wave">
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider animation="wave">
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
+        ),
+      },
+      {
+        label: "Pulse animation",
         code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
 
 <SkeletonProvider animation="pulse">
@@ -398,6 +419,48 @@ const COMPONENTS: ComponentEntry[] = [
 </SkeletonProvider>`,
         render: () => (
           <SkeletonProvider animation="pulse">
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
+        ),
+      },
+      {
+        label: "Fade animation",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonProvider animation="fade">
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider animation="fade">
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
+        ),
+      },
+      {
+        label: "No animation",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonProvider animation="none">
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider animation="none">
             <SkeletonGroup gap={12}>
               <ImageSkeleton height={120} />
               <TextSkeleton lines={3} />
@@ -429,6 +492,30 @@ const COMPONENTS: ComponentEntry[] = [
               </SkeletonGroup>
             </SkeletonProvider>
           </div>
+        ),
+      },
+      {
+        label: "Custom color: purple → pink",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+// color is the base fill; highlight is the shimmer the wave animation
+// sweeps toward — pairing a purple base with a pink highlight gives the
+// wave a colorful, gradient-like sweep instead of the default gray-on-gray.
+<SkeletonProvider color="#A78BFA" highlight="#F9A8D4">
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider color="#A78BFA" highlight="#F9A8D4">
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
         ),
       },
     ],
