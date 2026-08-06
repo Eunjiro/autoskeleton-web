@@ -30,7 +30,35 @@ import {
   Preview,
 } from "@/components/SkeletonDemos";
 import { ArticleSkeletonPlayground } from "@/components/Playground";
-import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
+import {
+  Skeleton,
+  SkeletonGroup,
+  SkeletonProvider,
+  TextSkeleton,
+  AvatarSkeleton,
+  ButtonSkeleton,
+  ImageSkeleton,
+  ArticleSkeleton,
+  CardSkeleton,
+  ChartSkeleton,
+  ChatMessageSkeleton,
+  CommentSkeleton,
+  DashboardSkeleton,
+  FormSkeleton,
+  GallerySkeleton,
+  ListSkeleton,
+  MediaObjectSkeleton,
+  NavbarSkeleton,
+  PricingCardSkeleton,
+  ProductCardSkeleton,
+  ProfileSkeleton,
+  SidebarSkeleton,
+  StatisticCardSkeleton,
+  StoriesBarSkeleton,
+  TableSkeleton,
+  TimelineSkeleton,
+  DARK_THEME,
+} from "@gyojiro/autoskeleton-react";
 import Header from "@/components/Header";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -126,6 +154,74 @@ const COMPONENTS: ComponentEntry[] = [
 <Skeleton animation="pulse" width="100%" height={20} />
 <Skeleton animation="fade"  width="100%" height={20} />`,
     Demo: SkeletonBasicDemo,
+    presets: [
+      {
+        label: "Rectangle",
+        code: `import { Skeleton } from "@gyojiro/autoskeleton-react";
+
+<div className="space-y-2">
+  <Skeleton width="100%" height={16} />
+  <Skeleton width="80%" height={16} />
+  <Skeleton width="60%" height={16} />
+</div>`,
+        render: () => (
+          <div className="space-y-2">
+            <Skeleton width="100%" height={16} />
+            <Skeleton width="80%" height={16} />
+            <Skeleton width="60%" height={16} />
+          </div>
+        ),
+      },
+      {
+        label: "Variants",
+        code: `import { Skeleton } from "@gyojiro/autoskeleton-react";
+
+<div className="flex flex-wrap gap-4 items-center">
+  <Skeleton width={80} height={36} />
+  <Skeleton width={80} height={36} variant="rounded" />
+  <Skeleton variant="circle" size={48} />
+  <Skeleton variant="circle" size={64} />
+</div>`,
+        render: () => (
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-col items-center gap-1">
+              <Skeleton width={80} height={36} />
+              <span className="text-xs text-slate-400">default</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Skeleton width={80} height={36} variant="rounded" />
+              <span className="text-xs text-slate-400">rounded</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Skeleton variant="circle" size={48} />
+              <span className="text-xs text-slate-400">circle 48</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Skeleton variant="circle" size={64} />
+              <span className="text-xs text-slate-400">circle 64</span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        label: "Animations",
+        code: `import { Skeleton } from "@gyojiro/autoskeleton-react";
+
+{(["wave", "pulse", "fade", "none"] as const).map((anim) => (
+  <Skeleton key={anim} width="100%" height={36} animation={anim} />
+))}`,
+        render: () => (
+          <div className="grid grid-cols-2 gap-3">
+            {(["wave", "pulse", "fade", "none"] as const).map((anim) => (
+              <div key={anim}>
+                <p className="text-xs text-slate-400 mb-1">{anim}</p>
+                <Skeleton width="100%" height={36} animation={anim} />
+              </div>
+            ))}
+          </div>
+        ),
+      },
+    ],
   },
   {
     id: "skeleton-group",
@@ -155,6 +251,91 @@ const COMPONENTS: ComponentEntry[] = [
   <TextSkeleton lines={3} />
 </SkeletonGroup>`,
     Demo: SkeletonGroupDemo,
+    presets: [
+      {
+        label: "Column layout (default)",
+        code: `import { SkeletonGroup, AvatarSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup gap={12}>
+  <AvatarSkeleton size={40} />
+  <TextSkeleton lines={2} />
+  <ButtonSkeleton />
+</SkeletonGroup>`,
+        render: () => (
+          <SkeletonGroup gap={12}>
+            <AvatarSkeleton size={40} />
+            <TextSkeleton lines={2} />
+            <ButtonSkeleton />
+          </SkeletonGroup>
+        ),
+      },
+      {
+        label: "Row layout + local pulse override",
+        code: `import { SkeletonGroup, AvatarSkeleton, TextSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup direction="row" gap={12} align="center" animation="pulse">
+  <AvatarSkeleton size={48} />
+  <TextSkeleton lines={2} />
+</SkeletonGroup>`,
+        render: () => (
+          <SkeletonGroup direction="row" gap={12} align="center" animation="pulse">
+            <AvatarSkeleton size={48} />
+            <TextSkeleton lines={2} />
+          </SkeletonGroup>
+        ),
+      },
+      {
+        label: "animationDirection: alternate",
+        code: `import { SkeletonGroup, Skeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup animationDirection="alternate" gap={8}>
+  <Skeleton width="100%" height={20} />
+  <Skeleton width="75%" height={20} />
+  <Skeleton width="50%" height={20} />
+</SkeletonGroup>`,
+        render: () => (
+          <SkeletonGroup animationDirection="alternate" gap={8}>
+            <Skeleton width="100%" height={20} />
+            <Skeleton width="75%" height={20} />
+            <Skeleton width="50%" height={20} />
+          </SkeletonGroup>
+        ),
+      },
+      {
+        label: 'layout="grid" columns={3}',
+        code: `import { SkeletonGroup, Skeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup layout="grid" columns={3} gap={12}>
+  {[0, 1, 2, 3, 4, 5].map((i) => (
+    <Skeleton key={i} height={48} radius="md" />
+  ))}
+</SkeletonGroup>`,
+        render: () => (
+          <SkeletonGroup layout="grid" columns={3} gap={12}>
+            {([0, 1, 2, 3, 4, 5] as const).map((i) => (
+              <Skeleton key={i} height={48} radius="md" />
+            ))}
+          </SkeletonGroup>
+        ),
+      },
+      {
+        label: "Responsive columns: 1 → 3 → 5 as this panel widens (resize the window)",
+        code: `import { SkeletonGroup, Skeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonGroup layout="grid" columns={{ base: 1, sm: 3, lg: 5 }} gap={12}>
+  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+    <Skeleton key={i} height={48} radius="md" />
+  ))}
+</SkeletonGroup>`,
+        render: () => (
+          <SkeletonGroup layout="grid" columns={{ base: 1, sm: 3, lg: 5 }} gap={12}>
+            {([0, 1, 2, 3, 4, 5, 6, 7, 8] as const).map((i) => (
+              <Skeleton key={i} height={48} radius="md" />
+            ))}
+          </SkeletonGroup>
+        ),
+      },
+    ],
   },
   {
     id: "skeleton-provider",
@@ -194,6 +375,54 @@ const COMPONENTS: ComponentEntry[] = [
   <CardSkeleton />
 </SkeletonProvider>`,
     Demo: ThemeCustomizationDemo,
+    presets: [
+      {
+        label: "SkeletonProvider — pulse animation",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SkeletonProvider animation="pulse">
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider animation="pulse">
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
+        ),
+      },
+      {
+        label: "SkeletonProvider — DARK_THEME preset",
+        code: `import { SkeletonProvider, DARK_THEME, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<div className="rounded-lg bg-slate-800 p-4">
+  <SkeletonProvider {...DARK_THEME}>
+    <SkeletonGroup gap={12}>
+      <ImageSkeleton height={120} />
+      <TextSkeleton lines={3} />
+      <ButtonSkeleton />
+    </SkeletonGroup>
+  </SkeletonProvider>
+</div>`,
+        render: () => (
+          <div className="rounded-lg bg-slate-800 p-4">
+            <SkeletonProvider {...DARK_THEME}>
+              <SkeletonGroup gap={12}>
+                <ImageSkeleton height={120} />
+                <TextSkeleton lines={3} />
+                <ButtonSkeleton />
+              </SkeletonGroup>
+            </SkeletonProvider>
+          </div>
+        ),
+      },
+    ],
   },
 
   // ── ATOMIC ──────────────────────────────────────────────────────────────────
@@ -228,6 +457,29 @@ const COMPONENTS: ComponentEntry[] = [
 // 1 line — good for labels
 <TextSkeleton lines={1} lineHeight={14} />`,
     Demo: TextSkeletonDemo,
+    presets: [
+      {
+        label: "3 lines (default)",
+        code: `import { TextSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TextSkeleton />`,
+        render: () => <TextSkeleton />,
+      },
+      {
+        label: "5 lines, randomized widths",
+        code: `import { TextSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TextSkeleton lines={5} randomizeWidths />`,
+        render: () => <TextSkeleton lines={5} randomizeWidths />,
+      },
+      {
+        label: "4 lines, lastLineWidth 50%, lineHeight 20",
+        code: `import { TextSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TextSkeleton lines={4} lastLineWidth="50%" lineHeight={20} gap={10} />`,
+        render: () => <TextSkeleton lines={4} lastLineWidth="50%" lineHeight={20} gap={10} />,
+      },
+    ],
   },
   {
     id: "avatar-skeleton",
@@ -251,6 +503,28 @@ const COMPONENTS: ComponentEntry[] = [
 // Small icon size
 <AvatarSkeleton size={24} animation="pulse" />`,
     Demo: AvatarSkeletonDemo,
+    presets: [
+      {
+        label: "Sizes",
+        code: `import { AvatarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<div className="flex flex-wrap gap-5 items-end">
+  {[24, 32, 40, 48, 64, 80].map((size) => (
+    <AvatarSkeleton key={size} size={size} />
+  ))}
+</div>`,
+        render: () => (
+          <div className="flex flex-wrap gap-5 items-end">
+            {([24, 32, 40, 48, 64, 80] as const).map((size) => (
+              <div key={size} className="flex flex-col items-center gap-1.5">
+                <AvatarSkeleton size={size} />
+                <span className="text-xs text-slate-400">{size}px</span>
+              </div>
+            ))}
+          </div>
+        ),
+      },
+    ],
   },
   {
     id: "button-skeleton",
@@ -278,6 +552,35 @@ const COMPONENTS: ComponentEntry[] = [
 // Rounded pill style
 <ButtonSkeleton width={160} height={44} radius="full" />`,
     Demo: ButtonSkeletonDemo,
+    presets: [
+      {
+        label: "Sizes",
+        code: `import { ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ButtonSkeleton width={80} height={32} />
+<ButtonSkeleton width={120} height={40} />
+<ButtonSkeleton width={160} height={44} />
+<ButtonSkeleton width="100%" height={48} />`,
+        render: () => (
+          <div className="space-y-3">
+            <div className="flex items-center gap-4">
+              <ButtonSkeleton width={80} height={32} />
+              <span className="text-xs text-slate-400">80 × 32 (sm)</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <ButtonSkeleton width={120} height={40} />
+              <span className="text-xs text-slate-400">120 × 40 (default)</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <ButtonSkeleton width={160} height={44} />
+              <span className="text-xs text-slate-400">160 × 44 (lg)</span>
+            </div>
+            <ButtonSkeleton width="100%" height={48} />
+            <span className="text-xs text-slate-400">100% width</span>
+          </div>
+        ),
+      },
+    ],
   },
   {
     id: "image-skeleton",
@@ -306,6 +609,32 @@ const COMPONENTS: ComponentEntry[] = [
 // Product image 4:5
 <ImageSkeleton aspectRatio="4/5" radius="none" />`,
     Demo: ImageSkeletonDemo,
+    presets: [
+      {
+        label: "Default (200px height)",
+        code: `import { ImageSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ImageSkeleton />`,
+        render: () => <ImageSkeleton />,
+      },
+      {
+        label: "Aspect ratios: 16/9, 4/3, 1/1",
+        code: `import { ImageSkeleton } from "@gyojiro/autoskeleton-react";
+
+<div className="grid grid-cols-3 gap-3">
+  <ImageSkeleton aspectRatio="16/9" />
+  <ImageSkeleton aspectRatio="4/3" />
+  <ImageSkeleton aspectRatio="1/1" />
+</div>`,
+        render: () => (
+          <div className="grid grid-cols-3 gap-3">
+            <ImageSkeleton aspectRatio="16/9" />
+            <ImageSkeleton aspectRatio="4/3" />
+            <ImageSkeleton aspectRatio="1/1" />
+          </div>
+        ),
+      },
+    ],
   },
 
   // ── COMPOSITES ──────────────────────────────────────────────────────────────
@@ -395,6 +724,49 @@ const COMPONENTS: ComponentEntry[] = [
   <Skeleton width={64} height={22} radius="full" />
 </CardSkeleton>`,
     Demo: CardSkeletonDemo,
+    presets: [
+      {
+        label: "Default (column)",
+        code: `import { CardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CardSkeleton />`,
+        render: () => <CardSkeleton />,
+      },
+      {
+        label: "With avatar",
+        code: `import { CardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CardSkeleton showAvatar />`,
+        render: () => <CardSkeleton showAvatar />,
+      },
+      {
+        label: "Row layout",
+        code: `import { CardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CardSkeleton direction="row" imageHeight={90} imageWidth={100} />`,
+        render: () => <CardSkeleton direction="row" imageHeight={90} imageWidth={100} />,
+      },
+      {
+        label: "No image",
+        code: `import { CardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CardSkeleton showImage={false} lines={4} />`,
+        render: () => <CardSkeleton showImage={false} lines={4} />,
+      },
+      {
+        label: "children: extra content appended after the button",
+        code: `import { CardSkeleton, Skeleton } from "@gyojiro/autoskeleton-react";
+
+<CardSkeleton showAvatar>
+  <Skeleton width={64} height={22} radius="full" />
+</CardSkeleton>`,
+        render: () => (
+          <CardSkeleton showAvatar>
+            <Skeleton width={64} height={22} radius="full" />
+          </CardSkeleton>
+        ),
+      },
+    ],
   },
   {
     id: "chart-skeleton",
@@ -413,6 +785,29 @@ const COMPONENTS: ComponentEntry[] = [
 <ChartSkeleton type="line" height={200} />
 <ChartSkeleton type="donut" height={160} />`,
     Demo: ChartSkeletonDemo,
+    presets: [
+      {
+        label: "Bar",
+        code: `import { ChartSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChartSkeleton type="bar" height={140} />`,
+        render: () => <ChartSkeleton type="bar" height={140} />,
+      },
+      {
+        label: "Line",
+        code: `import { ChartSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChartSkeleton type="line" height={140} />`,
+        render: () => <ChartSkeleton type="line" height={140} />,
+      },
+      {
+        label: "Donut",
+        code: `import { ChartSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChartSkeleton type="donut" height={140} />`,
+        render: () => <ChartSkeleton type="donut" height={140} />,
+      },
+    ],
   },
   {
     id: "chat-message-skeleton",
@@ -432,6 +827,22 @@ const COMPONENTS: ComponentEntry[] = [
 // More messages, no input
 <ChatMessageSkeleton messages={8} showInput={false} />`,
     Demo: ChatMessageSkeletonDemo,
+    presets: [
+      {
+        label: "Default: 4 messages + input",
+        code: `import { ChatMessageSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChatMessageSkeleton />`,
+        render: () => <ChatMessageSkeleton />,
+      },
+      {
+        label: "More messages, no input",
+        code: `import { ChatMessageSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ChatMessageSkeleton messages={8} showInput={false} />`,
+        render: () => <ChatMessageSkeleton messages={8} showInput={false} />,
+      },
+    ],
   },
   {
     id: "comment-skeleton",
@@ -456,6 +867,29 @@ const COMPONENTS: ComponentEntry[] = [
 // Longer comment bodies
 <CommentSkeleton lines={3} avatarSize={40} />`,
     Demo: CommentSkeletonDemo,
+    presets: [
+      {
+        label: "Default: 3 comments",
+        code: `import { CommentSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CommentSkeleton />`,
+        render: () => <CommentSkeleton />,
+      },
+      {
+        label: "5 comments with actions",
+        code: `import { CommentSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CommentSkeleton items={5} showActions />`,
+        render: () => <CommentSkeleton items={5} showActions />,
+      },
+      {
+        label: "Longer comment bodies",
+        code: `import { CommentSkeleton } from "@gyojiro/autoskeleton-react";
+
+<CommentSkeleton lines={3} avatarSize={40} />`,
+        render: () => <CommentSkeleton lines={3} avatarSize={40} />,
+      },
+    ],
   },
   {
     id: "dashboard-skeleton",
@@ -480,6 +914,29 @@ const COMPONENTS: ComponentEntry[] = [
 // Taller chart, more rows
 <DashboardSkeleton chartHeight={400} tableRows={10} />`,
     Demo: DashboardSkeletonDemo,
+    presets: [
+      {
+        label: "Default layout",
+        code: `import { DashboardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<DashboardSkeleton />`,
+        render: () => <DashboardSkeleton />,
+      },
+      {
+        label: "3 stats, no table",
+        code: `import { DashboardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<DashboardSkeleton statCards={3} tableRows={0} />`,
+        render: () => <DashboardSkeleton statCards={3} tableRows={0} />,
+      },
+      {
+        label: "Taller chart, more rows",
+        code: `import { DashboardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<DashboardSkeleton chartHeight={400} tableRows={10} />`,
+        render: () => <DashboardSkeleton chartHeight={400} tableRows={10} />,
+      },
+    ],
   },
   {
     id: "form-skeleton",
@@ -504,6 +961,29 @@ const COMPONENTS: ComponentEntry[] = [
 // Login form (2 fields)
 <FormSkeleton fields={2} />`,
     Demo: FormSkeletonDemo,
+    presets: [
+      {
+        label: "Default: 4 fields + submit",
+        code: `import { FormSkeleton } from "@gyojiro/autoskeleton-react";
+
+<FormSkeleton />`,
+        render: () => <FormSkeleton />,
+      },
+      {
+        label: "Taller inputs, no labels",
+        code: `import { FormSkeleton } from "@gyojiro/autoskeleton-react";
+
+<FormSkeleton inputHeight={52} showLabels={false} />`,
+        render: () => <FormSkeleton inputHeight={52} showLabels={false} />,
+      },
+      {
+        label: "Login form (2 fields)",
+        code: `import { FormSkeleton } from "@gyojiro/autoskeleton-react";
+
+<FormSkeleton fields={2} />`,
+        render: () => <FormSkeleton fields={2} />,
+      },
+    ],
   },
   {
     id: "gallery-skeleton",
@@ -528,6 +1008,22 @@ const COMPONENTS: ComponentEntry[] = [
 // 2-column portrait grid
 <GallerySkeleton columns={2} aspectRatio="3/4" items={6} />`,
     Demo: GallerySkeletonDemo,
+    presets: [
+      {
+        label: "Default 3×3 square grid",
+        code: `import { GallerySkeleton } from "@gyojiro/autoskeleton-react";
+
+<GallerySkeleton />`,
+        render: () => <GallerySkeleton />,
+      },
+      {
+        label: "4-column landscape grid",
+        code: `import { GallerySkeleton } from "@gyojiro/autoskeleton-react";
+
+<GallerySkeleton columns={4} aspectRatio="16/9" items={8} />`,
+        render: () => <GallerySkeleton columns={4} aspectRatio="16/9" items={8} />,
+      },
+    ],
   },
   {
     id: "list-skeleton",
@@ -553,6 +1049,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Icon-free plain list
 <ListSkeleton showIcon={false} items={8} />`,
     Demo: ListSkeletonDemo,
+    presets: [
+      {
+        label: "Default (icon + 1 line)",
+        code: `import { ListSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ListSkeleton items={5} />`,
+        render: () => <ListSkeleton items={5} />,
+      },
+      {
+        label: "2 lines + trailing",
+        code: `import { ListSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ListSkeleton items={4} lines={2} showTrailing />`,
+        render: () => <ListSkeleton items={4} lines={2} showTrailing />,
+      },
+    ],
   },
   {
     id: "media-object-skeleton",
@@ -577,6 +1089,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Larger image block
 <MediaObjectSkeleton mediaSize={96} lines={3} />`,
     Demo: MediaObjectSkeletonDemo,
+    presets: [
+      {
+        label: "Square media (default)",
+        code: `import { MediaObjectSkeleton } from "@gyojiro/autoskeleton-react";
+
+<MediaObjectSkeleton />`,
+        render: () => <MediaObjectSkeleton />,
+      },
+      {
+        label: "Circle media, right position",
+        code: `import { MediaObjectSkeleton } from "@gyojiro/autoskeleton-react";
+
+<MediaObjectSkeleton mediaShape="circle" mediaPosition="right" lines={3} />`,
+        render: () => <MediaObjectSkeleton mediaShape="circle" mediaPosition="right" lines={3} />,
+      },
+    ],
   },
   {
     id: "navbar-skeleton",
@@ -600,6 +1128,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Minimal: logo + 1 action
 <NavbarSkeleton navLinks={0} actions={1} />`,
     Demo: NavbarSkeletonDemo,
+    presets: [
+      {
+        label: "Default: logo + 4 links + 2 actions",
+        code: `import { NavbarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<NavbarSkeleton />`,
+        render: () => <NavbarSkeleton />,
+      },
+      {
+        label: "Minimal: logo + 1 action",
+        code: `import { NavbarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<NavbarSkeleton navLinks={0} actions={1} />`,
+        render: () => <NavbarSkeleton navLinks={0} actions={1} />,
+      },
+    ],
   },
   {
     id: "pricing-card-skeleton",
@@ -623,6 +1167,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Minimal plan
 <PricingCardSkeleton features={3} showButton={false} />`,
     Demo: PricingCardSkeletonDemo,
+    presets: [
+      {
+        label: "Default",
+        code: `import { PricingCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<PricingCardSkeleton />`,
+        render: () => <PricingCardSkeleton />,
+      },
+      {
+        label: "With badge",
+        code: `import { PricingCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<PricingCardSkeleton showBadge features={6} />`,
+        render: () => <PricingCardSkeleton showBadge features={6} />,
+      },
+    ],
   },
   {
     id: "product-card-skeleton",
@@ -646,6 +1206,22 @@ const COMPONENTS: ComponentEntry[] = [
 // No add-to-cart
 <ProductCardSkeleton showButton={false} />`,
     Demo: ProductCardSkeletonDemo,
+    presets: [
+      {
+        label: "Default",
+        code: `import { ProductCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ProductCardSkeleton />`,
+        render: () => <ProductCardSkeleton />,
+      },
+      {
+        label: "No rating",
+        code: `import { ProductCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ProductCardSkeleton showRating={false} />`,
+        render: () => <ProductCardSkeleton showRating={false} />,
+      },
+    ],
   },
   {
     id: "profile-skeleton",
@@ -676,6 +1252,35 @@ const COMPONENTS: ComponentEntry[] = [
   <Skeleton width={80} height={16} radius="full" />
 </ProfileSkeleton>`,
     Demo: ProfileSkeletonDemo,
+    presets: [
+      {
+        label: "Default",
+        code: `import { ProfileSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ProfileSkeleton />`,
+        render: () => <ProfileSkeleton />,
+      },
+      {
+        label: "Large avatar, no stats",
+        code: `import { ProfileSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ProfileSkeleton avatarSize={96} statsCount={0} />`,
+        render: () => <ProfileSkeleton avatarSize={96} statsCount={0} />,
+      },
+      {
+        label: "Real ProfileSkeleton + children: a verified badge",
+        code: `import { ProfileSkeleton, Skeleton } from "@gyojiro/autoskeleton-react";
+
+<ProfileSkeleton>
+  <Skeleton width={80} height={16} radius="full" />
+</ProfileSkeleton>`,
+        render: () => (
+          <ProfileSkeleton>
+            <Skeleton width={80} height={16} radius="full" />
+          </ProfileSkeleton>
+        ),
+      },
+    ],
   },
   {
     id: "sidebar-skeleton",
@@ -701,6 +1306,22 @@ const COMPONENTS: ComponentEntry[] = [
 // No user profile
 <SidebarSkeleton showProfile={false} navItems={8} />`,
     Demo: SidebarSkeletonDemo,
+    presets: [
+      {
+        label: "Logo + 6 nav items + profile",
+        code: `import { SidebarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SidebarSkeleton navItems={6} />`,
+        render: () => <SidebarSkeleton navItems={6} />,
+      },
+      {
+        label: "No user profile",
+        code: `import { SidebarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<SidebarSkeleton showProfile={false} navItems={8} />`,
+        render: () => <SidebarSkeleton showProfile={false} navItems={8} />,
+      },
+    ],
   },
   {
     id: "statistic-card-skeleton",
@@ -721,6 +1342,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Wider metric, no icon
 <StatisticCardSkeleton metricWidth="80%" showIcon={false} />`,
     Demo: StatisticCardSkeletonDemo,
+    presets: [
+      {
+        label: "Default",
+        code: `import { StatisticCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<StatisticCardSkeleton />`,
+        render: () => <StatisticCardSkeleton />,
+      },
+      {
+        label: "Wider metric, no icon",
+        code: `import { StatisticCardSkeleton } from "@gyojiro/autoskeleton-react";
+
+<StatisticCardSkeleton showIcon={false} metricWidth="80%" />`,
+        render: () => <StatisticCardSkeleton showIcon={false} metricWidth="80%" />,
+      },
+    ],
   },
   {
     id: "stories-bar-skeleton",
@@ -740,6 +1377,22 @@ const COMPONENTS: ComponentEntry[] = [
 // Chips without labels
 <StoriesBarSkeleton items={10} avatarSize={40} showLabel={false} />`,
     Demo: StoriesBarSkeletonDemo,
+    presets: [
+      {
+        label: "Scrolls instead of shrinking to fit — try a narrow window",
+        code: `import { StoriesBarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<StoriesBarSkeleton items={10} />`,
+        render: () => <StoriesBarSkeleton items={10} />,
+      },
+      {
+        label: "No labels, smaller avatars",
+        code: `import { StoriesBarSkeleton } from "@gyojiro/autoskeleton-react";
+
+<StoriesBarSkeleton items={12} avatarSize={40} showLabel={false} />`,
+        render: () => <StoriesBarSkeleton items={12} avatarSize={40} showLabel={false} />,
+      },
+    ],
   },
   {
     id: "table-skeleton",
@@ -766,6 +1419,22 @@ const COMPONENTS: ComponentEntry[] = [
 // No header, taller rows
 <TableSkeleton showHeader={false} rowHeight={24} rowGap={16} />`,
     Demo: TableSkeletonDemo,
+    presets: [
+      {
+        label: "4 cols × 5 rows + header",
+        code: `import { TableSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TableSkeleton columns={4} rows={5} showHeader />`,
+        render: () => <TableSkeleton columns={4} rows={5} showHeader />,
+      },
+      {
+        label: "No header, taller rows",
+        code: `import { TableSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TableSkeleton showHeader={false} rowHeight={24} rowGap={16} />`,
+        render: () => <TableSkeleton showHeader={false} rowHeight={24} rowGap={16} />,
+      },
+    ],
   },
   {
     id: "timeline-skeleton",
@@ -783,6 +1452,15 @@ const COMPONENTS: ComponentEntry[] = [
 // Slower animation
 <TimelineSkeleton duration={2.0} />`,
     Demo: TimelineSkeletonDemo,
+    presets: [
+      {
+        label: "Timeline entries",
+        code: `import { TimelineSkeleton } from "@gyojiro/autoskeleton-react";
+
+<TimelineSkeleton events={4} />`,
+        render: () => <TimelineSkeleton events={4} />,
+      },
+    ],
   },
 ];
 
