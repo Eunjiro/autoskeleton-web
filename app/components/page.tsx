@@ -1613,7 +1613,7 @@ function Sidebar({
             <button
               key={c.id}
               onClick={() => onSelect(c.id)}
-              className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all ${
+              className={`hover-shimmer w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all ${
                 selected === c.id
                   ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium"
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50"

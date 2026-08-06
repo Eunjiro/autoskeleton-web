@@ -700,7 +700,7 @@ function ExampleCard({
     });
   }, [code]);
 
-  const btnBase = 'px-2.5 py-1 text-xs font-medium rounded-md transition-all';
+  const btnBase = 'hover-shimmer px-2.5 py-1 text-xs font-medium rounded-md transition-all';
   const btnActive = `${btnBase} bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100`;
   const btnInactive = `${btnBase} text-slate-400 hover:text-slate-600 dark:hover:text-slate-300`;
 
@@ -1913,7 +1913,7 @@ function CreativeCard({ title, description, code, children }: { title: string; d
         </div>
         <button
           onClick={() => setShowCode((v) => !v)}
-          className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+          className="hover-shimmer flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
         >
           {showCode ? 'Preview' : 'Code'}
         </button>

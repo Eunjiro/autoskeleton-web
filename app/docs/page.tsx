@@ -206,7 +206,7 @@ export default function DocsPage() {
                     <a
                       href={`#${item.id}`}
                       onClick={() => setActiveId(item.id)}
-                      className={`block text-sm py-1 px-2 rounded transition ${
+                      className={`hover-shimmer block text-sm py-1 px-2 rounded transition ${
                         activeId === item.id
                           ? "text-blue-600 dark:text-blue-400 font-medium"
                           : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"

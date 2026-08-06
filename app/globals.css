@@ -95,6 +95,59 @@ pre, code {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='%231e293b' stroke-opacity='0.8'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
 }
 
+/* ── Hover shimmer ────────────────────────────────────────────────────────────
+   Reuses the exact shimmer sweep the library's own "wave" skeleton animation
+   uses (see skeleton-wave in the package's CSS), just triggered on :hover
+   instead of a loading state — a wink that this whole site runs on
+   AutoSkeleton. Apply .hover-shimmer to any interactive element; it needs
+   its own stacking context so the sweep doesn't bleed onto siblings. */
+.hover-shimmer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hover-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  /* Violet instead of plain white — a white sweep disappears on the
+     site's white/light-gray cards. Violet reads against light, dark,
+     and the violet CTA buttons alike. */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.4) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.dark .hover-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(196, 181, 253, 0.35) 50%,
+    transparent 100%
+  );
+}
+
+.hover-shimmer:hover::after {
+  animation: hover-shimmer-sweep 0.85s ease-in-out;
+}
+
+@keyframes hover-shimmer-sweep {
+  100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-shimmer::after {
+    animation: none !important;
+    display: none;
+  }
+}
+
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -80,7 +80,7 @@ export default function Header() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all"
+                className="hover-shimmer px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all"
               >
                 {l.label}
               </Link>
@@ -93,7 +93,7 @@ export default function Header() {
               href="https://github.com/Eunjiro/autoskeleton"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hover-shimmer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="GitHub repository"
             >
               <GithubIcon size={14} />
@@ -103,7 +103,7 @@ export default function Header() {
               href="https://www.npmjs.com/package/@gyojiro/autoskeleton-react"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hover-shimmer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="npm package"
             >
               <ExternalLink size={13} strokeWidth={2} />
@@ -125,7 +125,7 @@ export default function Header() {
             {/* Get started CTA */}
             <Link
               href="/docs"
-              className="ml-2 inline-flex items-center px-3.5 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-colors"
+              className="hover-shimmer ml-2 inline-flex items-center px-3.5 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-colors"
             >
               Get Started
             </Link>
@@ -150,7 +150,7 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hover-shimmer block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               onClick={() => setOpen(false)}
             >
               {l.label}

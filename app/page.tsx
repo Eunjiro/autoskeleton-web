@@ -294,17 +294,17 @@ export default function HomePage() {
                 {/* CTAs */}
                 <div className="flex flex-wrap gap-3">
                   <Link href="/docs"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:-translate-y-px active:translate-y-0"
+                    className="hover-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:-translate-y-px active:translate-y-0"
                   >
                     Get Started <ArrowRight size={15} strokeWidth={2.5} />
                   </Link>
                   <Link href="/components"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md hover:-translate-y-px active:translate-y-0 transition-all duration-200"
+                    className="hover-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md hover:-translate-y-px active:translate-y-0 transition-all duration-200"
                   >
                     View Components
                   </Link>
                   <a href="https://github.com/Eunjiro/autoskeleton" target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md hover:-translate-y-px active:translate-y-0 transition-all duration-200"
+                    className="hover-shimmer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md hover:-translate-y-px active:translate-y-0 transition-all duration-200"
                   >
                     <GithubIcon size={15} /> GitHub
                   </a>
@@ -353,7 +353,7 @@ export default function HomePage() {
                 <div
                   key={f.title}
                   style={{ animationDelay: `${i * 60}ms` }}
-                  className="group p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 dark:hover:shadow-violet-900/20 transition-all duration-300 hover:-translate-y-0.5 animate-fade-up"
+                  className="hover-shimmer group p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 dark:hover:shadow-violet-900/20 transition-all duration-300 hover:-translate-y-0.5 animate-fade-up"
                 >
                   <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl mb-5 ${f.color}`}>
                     <f.icon size={18} strokeWidth={2} />
@@ -475,7 +475,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
+              <div className="hover-shimmer group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
                 <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-5 bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400">
                   <Package size={20} strokeWidth={2} />
                 </div>
@@ -494,7 +494,7 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
+              <div className="hover-shimmer group relative p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700/50 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300">
                 <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl mb-5 bg-fuchsia-50 dark:bg-fuchsia-950/30 text-fuchsia-600 dark:text-fuchsia-400">
                   <Wand2 size={20} strokeWidth={2} />
                 </div>
@@ -534,7 +534,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link href="/components"
-                className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-sm font-semibold transition-all shadow-lg shadow-violet-500/25 hover:-translate-y-px"
+                className="hover-shimmer shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-sm font-semibold transition-all shadow-lg shadow-violet-500/25 hover:-translate-y-px"
               >
                 Browse All <ArrowRight size={14} strokeWidth={2.5} />
               </Link>
@@ -543,7 +543,7 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-2">
               {COMPONENTS.map(name => (
                 <Link key={name} href="/components"
-                  className="px-3 py-1.5 rounded-lg text-sm font-mono font-medium border border-slate-200 dark:border-slate-700/70 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all duration-150"
+                  className="hover-shimmer px-3 py-1.5 rounded-lg text-sm font-mono font-medium border border-slate-200 dark:border-slate-700/70 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900/60 hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-all duration-150"
                 >
                   {name}
                 </Link>
@@ -573,12 +573,12 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link href="/docs"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-sm font-semibold transition-all hover:-translate-y-px shadow-lg"
+                className="hover-shimmer inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-sm font-semibold transition-all hover:-translate-y-px shadow-lg"
               >
                 Get Started <ArrowRight size={15} strokeWidth={2.5} />
               </Link>
               <a href="https://github.com/Eunjiro/autoskeleton" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/15 hover:border-white/30 text-white text-sm font-semibold hover:bg-white/5 transition-all hover:-translate-y-px"
+                className="hover-shimmer inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/15 hover:border-white/30 text-white text-sm font-semibold hover:bg-white/5 transition-all hover:-translate-y-px"
               >
                 <GithubIcon size={15} /> Star on GitHub
               </a>
