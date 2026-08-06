@@ -1,0 +1,22 @@
+# AutoSkeleton
+
+> AutoSkeleton is a TypeScript-first React component library for building skeleton loading UIs. It ships 26 components — from atomic primitives (Skeleton, TextSkeleton, AvatarSkeleton) to full composites (ArticleSkeleton, DashboardSkeleton, ChatMessageSkeleton) — that mirror the real layout of the UI they stand in for, so there's no layout shift when content loads. Zero required configuration, fully typed, themeable via SkeletonProvider (animation style, speed, color, dark mode), and respects prefers-reduced-motion by default.
+
+Install: `npm install @gyojiro/autoskeleton-react`
+Requires: React 18 or 19 (web/DOM only — not React Native)
+Works with: Next.js (App Router and Pages Router), Vite, Remix, Gatsby, Create React App, or any React 18+ web project.
+
+## Docs
+
+- [Documentation](https://www.autoskeleton.com/docs): setup, theming, dark mode, accessibility, full API reference
+- [Components](https://www.autoskeleton.com/components): all 26 components with live previews paired to their exact code
+- [Examples](https://www.autoskeleton.com/examples): 23 real-world layouts composed from the primitives
+
+## Source
+
+- [npm package](https://www.npmjs.com/package/@gyojiro/autoskeleton-react)
+- [GitHub repository](https://github.com/Eunjiro/autoskeleton)
+
+## License
+
+MIT
