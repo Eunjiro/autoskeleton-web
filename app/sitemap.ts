@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://autoskeleton-web.vercel.app";
+const SITE_URL = "https://www.autoskeleton.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ["", "/docs", "/components", "/examples"];

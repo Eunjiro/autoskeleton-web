@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://autoskeleton-web.vercel.app";
+const SITE_URL = "https://www.autoskeleton.com";
 const SITE_TITLE = "AutoSkeleton — Beautiful Loading Skeletons for React";
 const SITE_DESCRIPTION =
   "26 TypeScript-first skeleton loading components for React that mirror your real UI. Zero config, fully themeable, dark mode built in. Works with Next.js, Vite, and any React 18+ setup.";

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://autoskeleton-web.vercel.app/sitemap.xml",
+    sitemap: "https://www.autoskeleton.com/sitemap.xml",
   };
 }
