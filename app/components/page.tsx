@@ -1784,7 +1784,7 @@ export default function ComponentsPage() {
             <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
               Composites here cover most layouts out of the box. When your design needs a shape none of
               them offer, the primitives (Skeleton, TextSkeleton, SkeletonGroup) compose freely —{" "}
-              <a href="/examples#drop-in-components" className="underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-400">
+              <a href="/examples" className="underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-400">
                 see it done in Examples
               </a>.
             </p>
