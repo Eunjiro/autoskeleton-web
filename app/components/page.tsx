@@ -470,6 +470,29 @@ const COMPONENTS: ComponentEntry[] = [
         ),
       },
       {
+        label: "Slower animation (duration)",
+        code: `import { SkeletonProvider, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
+
+// duration sets --skeleton-duration, which drives all three animations
+// (wave, pulse, fade) — default is 1.2s, this slows it to 3s.
+<SkeletonProvider duration={3}>
+  <SkeletonGroup gap={12}>
+    <ImageSkeleton height={120} />
+    <TextSkeleton lines={3} />
+    <ButtonSkeleton />
+  </SkeletonGroup>
+</SkeletonProvider>`,
+        render: () => (
+          <SkeletonProvider duration={3}>
+            <SkeletonGroup gap={12}>
+              <ImageSkeleton height={120} />
+              <TextSkeleton lines={3} />
+              <ButtonSkeleton />
+            </SkeletonGroup>
+          </SkeletonProvider>
+        ),
+      },
+      {
         label: "SkeletonProvider — DARK_THEME preset",
         code: `import { SkeletonProvider, DARK_THEME, SkeletonGroup, ImageSkeleton, TextSkeleton, ButtonSkeleton } from "@gyojiro/autoskeleton-react";
 
