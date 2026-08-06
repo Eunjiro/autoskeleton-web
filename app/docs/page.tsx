@@ -243,6 +243,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(<App />);`}
                   <Code>SkeletonProvider</Code> — but it is completely optional. Every skeleton
                   works standalone with sensible defaults.
                 </Callout>
+
+                <Callout type="info">
+                  Code snippets throughout these docs, <Code>/components</Code>, and{" "}
+                  <Code>/examples</Code> use Tailwind CSS classes (<Code>flex</Code>,{" "}
+                  <Code>gap-4</Code>, <Code>card</Code>, etc.) for the surrounding layout markup.
+                  The skeleton component calls themselves don&apos;t require Tailwind — they work
+                  with any styling setup — but if you copy a snippet wholesale and don&apos;t have
+                  Tailwind installed, the wrapper divs won&apos;t be laid out as shown; swap those
+                  classes for your own CSS, or add Tailwind to match exactly.
+                </Callout>
               </Section>
 
               {/* ── QUICK START ─────────────────────────────────────────── */}

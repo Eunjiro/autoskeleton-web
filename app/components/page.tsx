@@ -1788,6 +1788,11 @@ export default function ComponentsPage() {
                 see it done in Examples
               </a>.
             </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
+              Code snippets assume Tailwind CSS for the wrapper markup (<code className="font-mono">flex</code>,{" "}
+              <code className="font-mono">gap-4</code>, <code className="font-mono">card</code>, etc.) — the
+              skeleton component calls themselves work with any styling setup.
+            </p>
           </div>
         </div>
 
