@@ -88,6 +88,15 @@ interface ComponentEntry {
    * by its own accurate, self-contained code block, repeated per preset.
    */
   presets?: { label: string; code: string; render: () => React.ReactNode }[];
+  /**
+   * Optional className applied to each preset's Preview wrapper. Composites
+   * that are meant to look like a narrow UI element (a sidebar, a pricing
+   * card, a centered profile card) render inside a plain full-width Preview
+   * by default, which stretches their internal percentage widths and
+   * centered/justified layouts out to the whole content column -- reading as
+   * broken spacing rather than the compact element they're meant to be.
+   */
+  previewClassName?: string;
 }
 
 // ─── Shared base-props (shown inline where extended) ─────────────────────────
@@ -662,6 +671,7 @@ const COMPONENTS: ComponentEntry[] = [
 // Shorter hero
 <ArticleSkeleton heroHeight={160} bodyLines={4} />`,
     Demo: ArticleSkeletonDemo,
+    previewClassName: "max-w-lg",
     Playground: ArticleSkeletonPlayground,
     presets: [
       {
@@ -724,6 +734,7 @@ const COMPONENTS: ComponentEntry[] = [
   <Skeleton width={64} height={22} radius="full" />
 </CardSkeleton>`,
     Demo: CardSkeletonDemo,
+    previewClassName: "max-w-sm",
     presets: [
       {
         label: "Default (column)",
@@ -961,6 +972,7 @@ const COMPONENTS: ComponentEntry[] = [
 // Login form (2 fields)
 <FormSkeleton fields={2} />`,
     Demo: FormSkeletonDemo,
+    previewClassName: "max-w-sm",
     presets: [
       {
         label: "Default: 4 fields + submit",
@@ -1167,6 +1179,7 @@ const COMPONENTS: ComponentEntry[] = [
 // Minimal plan
 <PricingCardSkeleton features={3} showButton={false} />`,
     Demo: PricingCardSkeletonDemo,
+    previewClassName: "max-w-sm",
     presets: [
       {
         label: "Default",
@@ -1206,6 +1219,7 @@ const COMPONENTS: ComponentEntry[] = [
 // No add-to-cart
 <ProductCardSkeleton showButton={false} />`,
     Demo: ProductCardSkeletonDemo,
+    previewClassName: "max-w-sm",
     presets: [
       {
         label: "Default",
@@ -1252,6 +1266,7 @@ const COMPONENTS: ComponentEntry[] = [
   <Skeleton width={80} height={16} radius="full" />
 </ProfileSkeleton>`,
     Demo: ProfileSkeletonDemo,
+    previewClassName: "max-w-sm",
     presets: [
       {
         label: "Default",
@@ -1306,6 +1321,7 @@ const COMPONENTS: ComponentEntry[] = [
 // No user profile
 <SidebarSkeleton showProfile={false} navItems={8} />`,
     Demo: SidebarSkeletonDemo,
+    previewClassName: "max-w-xs",
     presets: [
       {
         label: "Logo + 6 nav items + profile",
@@ -1342,6 +1358,7 @@ const COMPONENTS: ComponentEntry[] = [
 // Wider metric, no icon
 <StatisticCardSkeleton metricWidth="80%" showIcon={false} />`,
     Demo: StatisticCardSkeletonDemo,
+    previewClassName: "max-w-xs",
     presets: [
       {
         label: "Default",
@@ -1638,7 +1655,7 @@ export default function ComponentsPage() {
   }, [selectedId]);
 
   const component = COMPONENTS.find((c) => c.id === selectedId) ?? COMPONENTS[0];
-  const { Demo, Playground, presets } = component;
+  const { Demo, Playground, presets, previewClassName } = component;
 
   return (
     <>
@@ -1733,7 +1750,7 @@ export default function ComponentsPage() {
                         <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">
                           {preset.label}
                         </p>
-                        <Preview className="mb-3">{preset.render()}</Preview>
+                        <Preview className={`mb-3 ${previewClassName ?? ""}`}>{preset.render()}</Preview>
                         <CodeBlock code={preset.code} />
                       </div>
                     ))}
