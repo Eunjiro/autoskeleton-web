@@ -27,8 +27,10 @@ import {
   TableSkeletonDemo,
   TimelineSkeletonDemo,
   ThemeCustomizationDemo,
+  Preview,
 } from "@/components/SkeletonDemos";
 import { ArticleSkeletonPlayground } from "@/components/Playground";
+import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
 import Header from "@/components/Header";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -50,6 +52,14 @@ interface ComponentEntry {
   Demo: React.ComponentType;
   /** Optional interactive prop playground, shown above the static Demo presets. */
   Playground?: React.ComponentType;
+  /**
+   * Optional list of named usage presets, each paired with the exact code
+   * that produces it. When set, this replaces the Demo/code split (a single
+   * preview above one multi-snippet code block, which could show variations
+   * the preview never actually rendered) with a preview immediately followed
+   * by its own accurate, self-contained code block, repeated per preset.
+   */
+  presets?: { label: string; code: string; render: () => React.ReactNode }[];
 }
 
 // ─── Shared base-props (shown inline where extended) ─────────────────────────
@@ -324,6 +334,29 @@ const COMPONENTS: ComponentEntry[] = [
 <ArticleSkeleton heroHeight={160} bodyLines={4} />`,
     Demo: ArticleSkeletonDemo,
     Playground: ArticleSkeletonPlayground,
+    presets: [
+      {
+        label: "Default",
+        code: `import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ArticleSkeleton />`,
+        render: () => <ArticleSkeleton />,
+      },
+      {
+        label: "No hero image, more body lines",
+        code: `import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ArticleSkeleton showHeroImage={false} bodyLines={10} />`,
+        render: () => <ArticleSkeleton showHeroImage={false} bodyLines={10} />,
+      },
+      {
+        label: "Shorter hero",
+        code: `import { ArticleSkeleton } from "@gyojiro/autoskeleton-react";
+
+<ArticleSkeleton heroHeight={160} bodyLines={4} />`,
+        render: () => <ArticleSkeleton heroHeight={160} bodyLines={4} />,
+      },
+    ],
   },
   {
     id: "card-skeleton",
@@ -927,7 +960,7 @@ export default function ComponentsPage() {
   }, [selectedId]);
 
   const component = COMPONENTS.find((c) => c.id === selectedId) ?? COMPONENTS[0];
-  const { Demo, Playground } = component;
+  const { Demo, Playground, presets } = component;
 
   return (
     <>
@@ -1008,13 +1041,34 @@ export default function ComponentsPage() {
                 </section>
               )}
 
-              {/* Live preview */}
-              <section>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
-                  {Playground ? "Common Presets" : "Live Preview"}
-                </h3>
-                <Demo />
-              </section>
+              {presets ? (
+                /* Each preset's preview sits directly above its own code —
+                   no separate multi-snippet code block that can describe a
+                   variation the preview above it never actually shows. */
+                <section>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
+                    Examples
+                  </h3>
+                  <div className="space-y-8">
+                    {presets.map((preset) => (
+                      <div key={preset.label}>
+                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">
+                          {preset.label}
+                        </p>
+                        <Preview className="mb-3">{preset.render()}</Preview>
+                        <CodeBlock code={preset.code} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                <section>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
+                    {Playground ? "Common Presets" : "Live Preview"}
+                  </h3>
+                  <Demo />
+                </section>
+              )}
 
               {/* Props */}
               <section>
@@ -1024,13 +1078,14 @@ export default function ComponentsPage() {
                 <PropsTable props={component.props} />
               </section>
 
-              {/* Code */}
-              <section>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
-                  Usage
-                </h3>
-                <CodeBlock code={component.code} />
-              </section>
+              {!presets && (
+                <section>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
+                    Usage
+                  </h3>
+                  <CodeBlock code={component.code} />
+                </section>
+              )}
             </main>
           </div>
         </div>

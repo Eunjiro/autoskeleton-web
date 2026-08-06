@@ -20,7 +20,7 @@ import { useState } from "react";
 
 // ─── Preview wrapper ──────────────────────────────────────────────────────────
 
-function Preview({
+export function Preview({
   children,
   label,
   className = "",
