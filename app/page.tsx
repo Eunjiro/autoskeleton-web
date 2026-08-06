@@ -341,7 +341,7 @@ export default function HomePage() {
             <div className="text-center mb-14 space-y-3">
               <p className="text-xs font-bold text-violet-600 dark:text-violet-400 tracking-[0.2em] uppercase">Why AutoSkeleton</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Everything you need.<br className="hidden sm:block" />Nothing you don&apos;t.
+                Every feature<br className="hidden sm:block" />earns its place.
               </h2>
               <p className="text-base text-slate-500 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
                 Built for developer experience without sacrificing flexibility, performance, or accessibility.
@@ -376,7 +376,7 @@ export default function HomePage() {
                 <div>
                   <p className="text-xs font-bold text-violet-600 dark:text-violet-400 tracking-[0.2em] uppercase mb-3">Quick Start</p>
                   <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
-                    Up and running in seconds.
+                    Four steps. That&apos;s it.
                   </h2>
                   <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-base">
                     Install the package, import the CSS once in your root layout, and start replacing loading spinners with beautiful skeletons.
